@@ -1,13 +1,14 @@
-import Logo from "./components/Logo";
-import { Button } from "./components/ui/button";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import LoginPage from "./pages/auth/LoginPage";
 
 function App() {
-  return (
-    <>
-      <Button>This is a button</Button>
-      <Logo />
-    </>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <LoginPage />,
+    },
+  ]);
+  return <RouterProvider router={router} />;
 }
 
 export default App;

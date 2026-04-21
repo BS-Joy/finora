@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -42,6 +43,7 @@
 @theme inline {
   --font-sans: var(--font-plus-jakarta);
   --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-sora: "Sora", sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

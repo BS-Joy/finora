@@ -25,7 +25,7 @@ const Sidebar = () => {
       {isDesktop && (
         <motion.aside
           key="sidebar"
-          className="font-jakarta w-68 bg-card border h-screen fixed flex flex-col justify-between"
+          className="font-jakarta w-68 bg-card border h-screen fixed flex flex-col justify-between z-10"
           initial={{ x: -200, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -73,7 +73,7 @@ const Sidebar = () => {
             <Button
               variant="destructive"
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-5 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer"
+              className="flex items-center gap-3 px-4 py-6 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer"
             >
               <LogOut
                 size={20}

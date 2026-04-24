@@ -4,9 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import Spinner from "../Spinner";
 import Sidebar from "./Sidebar";
+import BottomNavbar from "./BottomNavbar";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const Layout = () => {
   const { user, setUser } = useAuthStore();
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const { isPending, isError, error } = useQuery({
     queryKey: ["user"],
@@ -54,6 +57,7 @@ const Layout = () => {
   return (
     <>
       <Sidebar />
+      {isMobile && <BottomNavbar />}
       <Outlet />
     </>
   );

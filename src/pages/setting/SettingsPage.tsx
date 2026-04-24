@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-const IncomePage = () => {
+const SettingsPage = () => {
   return (
     <motion.div
       className="ml-2 md:ml-69"
@@ -7,10 +7,10 @@ const IncomePage = () => {
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
     >
-      <h1>Income Page</h1>
-      <p>This is where you can manage your income.</p>
+      <h1>Settings Page</h1>
+      <p>This is where you can manage your settings.</p>
     </motion.div>
   );
 };
 
-export default IncomePage;
+export default SettingsPage;

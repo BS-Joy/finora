@@ -15,7 +15,9 @@ const Logo = ({ textColor }: { textColor: string }) => {
       <div className="w-11 h-11 rounded-[12px] bg-ring flex items-center justify-center font-extrabold text-[16px] text-forest tracking-[-0.5px] shrink-0">
         <HandCoins size={20} />
       </div>
-      <span className={`text-${textColor} font-bold text-2xl m-0`}>Finora</span>
+      <span className={`text-${textColor} font-sora font-bold text-2xl m-0`}>
+        Finora
+      </span>
     </div>
   );
 };

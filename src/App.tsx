@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import IncomePage from "./pages/income/IncomePage";
 import Layout from "./components/layout/Layout";
 import ErrorPage from "./components/ErrorPage";
+import ExpensesPage from "./pages/expense/ExpensesPage";
+import SettingsPage from "./pages/setting/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -12,6 +14,13 @@ function App() {
   const router = createBrowserRouter([
     {
       element: <Layout />,
+      errorElement: (
+        <ErrorPage
+          code={404}
+          title="Page Not Found"
+          description="The page you are looking for does not exist."
+        />
+      ),
       children: [
         {
           path: "/",
@@ -21,23 +30,20 @@ function App() {
           path: "/income",
           element: <IncomePage />,
         },
+        {
+          path: "/expenses",
+          element: <ExpensesPage />,
+        },
+        {
+          path: "/settings",
+          element: <SettingsPage />,
+        },
       ],
     },
 
     {
       path: "/login",
       element: <LoginPage />,
-    },
-    {
-      path: "/error",
-      element: (
-        <ErrorPage
-          // onGoHome={() => (window.location.href = "/")}
-          code={505}
-          description="Just checking"
-          title="not found"
-        />
-      ),
     },
   ]);
   return (

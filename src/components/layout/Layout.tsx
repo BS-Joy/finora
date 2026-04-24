@@ -1,9 +1,9 @@
 import { Link, Navigate, Outlet } from "react-router";
-import Logo from "../Logo";
 import { useAuthStore } from "@/store/AuthStore";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import Spinner from "../Spinner";
+import Sidebar from "./Sidebar";
 
 const Layout = () => {
   const { user, setUser } = useAuthStore();
@@ -52,10 +52,10 @@ const Layout = () => {
   }
 
   return (
-    <div>
-      <Logo textColor="accent" />
+    <>
+      <Sidebar />
       <Outlet />
-    </div>
+    </>
   );
 };
 

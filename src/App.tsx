@@ -7,6 +7,7 @@ import Layout from "./components/layout/Layout";
 import ErrorPage from "./components/ErrorPage";
 import ExpensesPage from "./pages/expense/ExpensesPage";
 import SettingsPage from "./pages/setting/SettingsPage";
+import { ThemeProvider } from "./components/theme-provider";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +49,9 @@ function App() {
   ]);
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ThemeProvider defaultTheme="system" storageKey="finora-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

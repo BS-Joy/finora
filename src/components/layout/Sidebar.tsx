@@ -35,7 +35,7 @@ const Sidebar = () => {
           <div>
             {/* logo */}
             <div className="w-full pl-8 py-6 border-b">
-              <Logo textColor="primary" />
+              <Logo textColor="primary" darkTextColor="cream" />
             </div>
 
             {/* navigation */}
@@ -73,7 +73,7 @@ const Sidebar = () => {
             <Button
               variant="destructive"
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-6 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer"
+              className="flex items-center gap-3 px-4 py-6 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer border-destructive"
             >
               <LogOut
                 size={20}

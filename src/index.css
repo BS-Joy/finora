@@ -42,6 +42,75 @@
   --cream-dark: oklch(0.93 0.025 100);
 }
 
+.dark {
+  /* ─── Surfaces ─────────────────────────────────────────────
+     Deep forest-tinted darks. NOT pure black — each level
+     has a subtle green hue to stay on-brand with your palette.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Page background — very dark forest, almost black */
+  --background: oklch(0.14 0.025 160);
+
+  /* Main text — warm off-white, easy on the eyes */
+  --foreground: oklch(0.93 0.02 100);
+
+  /* Card surfaces — slightly lighter than background */
+  --card: oklch(0.18 0.03 155);
+  --card-foreground: oklch(0.93 0.02 100);
+
+  /* Popovers match cards */
+  --popover: oklch(0.18 0.03 155);
+  --popover-foreground: oklch(0.93 0.02 100);
+
+  /* ─── Brand colors ──────────────────────────────────────────
+     Lime stays lime — it glows beautifully on dark surfaces.
+     Forest green becomes the darkest sidebar tone.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Primary: used for sidebar bg, active states, CTAs */
+  --primary: oklch(0.11 0.022 155);
+  --primary-foreground: oklch(0.93 0.02 100);
+
+  /* Secondary: subtle raised surface (hover states, tags) */
+  --secondary: oklch(0.22 0.04 155);
+  --secondary-foreground: oklch(0.82 0.04 130);
+
+  /* Muted: used for disabled states, placeholders */
+  --muted: oklch(0.2 0.03 155);
+  --muted-foreground: oklch(68.531% 0.04168 155.582);
+
+  /* ─── Accent (lime) ─────────────────────────────────────────
+     Your lime is the hero. Stays punchy. Used for active nav,
+     badges, highlights, focus rings.
+  ─────────────────────────────────────────────────────────── */
+  --accent: oklch(0.82 0.22 118);
+  --accent-foreground: oklch(0.12 0.04 155);
+
+  /* ─── Semantic ──────────────────────────────────────────── */
+  --destructive: oklch(0.52 0.2 27);
+  --destructive-foreground: oklch(0.95 0.01 27);
+
+  /* ─── Borders & inputs ──────────────────────────────────── */
+  --border: oklch(0.25 0.03 155);
+  --input: oklch(0.22 0.035 155);
+  --ring: oklch(0.82 0.22 118); /* lime focus ring */
+
+  /* ─── Charts ────────────────────────────────────────────── */
+  --chart-1: oklch(0.82 0.22 118); /* lime — primary data */
+  --chart-2: oklch(0.52 0.14 155); /* mid forest */
+  --chart-3: oklch(0.68 0.18 118); /* muted lime */
+  --chart-4: oklch(0.38 0.09 150); /* deep sage */
+  --chart-5: oklch(0.28 0.06 155); /* darkest forest */
+
+  /* ─── Custom tokens ─────────────────────────────────────── */
+  --lime: oklch(0.82 0.22 118);
+  --lime-dark: oklch(0.72 0.2 118);
+  --forest: oklch(0.11 0.022 155);
+  --forest-dark: oklch(0.08 0.018 155);
+  --cream: oklch(0.93 0.02 100);
+  --cream-dark: oklch(0.85 0.025 100);
+}
+
 @theme inline {
   --font-jakarta: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";

@@ -30,17 +30,18 @@ const NavLinkItem = ({
       className={cn(
         "group cursor-pointer transition-colors duration-500",
         isBottom
-          ? "w-full flex flex-col items-center gap-3 text-primary/50 p-2 sm:px-6 sm:py-4 text-sm font-semibold"
+          ? "w-full flex flex-col items-center gap-3 text-primary/50 p-2 sm:px-6 sm:py-4 text-sm font-semibold dark:text-muted-foreground"
           : "flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg",
         {
           // active
-          "bg-primary text-accent hover:cursor-not-allowed":
+          "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
             isActive && !isBottom,
-          "border-t-2 border-t-primary hover:cursor-not-allowed text-primary font-bold":
+          "border-t-2 border-t-primary hover:cursor-not-allowed text-primary font-bold dark:border-t-accent dark:text-accent":
             isActive && isBottom,
 
           // inactive
-          "text-primary hover:bg-secondary": !isActive,
+          "text-primary hover:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary dark:hover:text-accent":
+            !isActive,
         },
       )}
     >
@@ -64,7 +65,7 @@ const NavLinkItem = ({
 
       {/* Active indicator (sidebar only) */}
       {!isBottom && isActive && (
-        <span className="ml-auto w-2 h-2 rounded-full bg-lime animate-pulse" />
+        <span className="ml-auto w-2 h-2 rounded-full bg-lime dark:bg-primary animate-pulse" />
       )}
     </li>
   );

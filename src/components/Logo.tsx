@@ -1,5 +1,11 @@
 import { HandCoins } from "lucide-react";
-const Logo = ({ textColor }: { textColor: string }) => {
+const Logo = ({
+  textColor,
+  darkTextColor,
+}: {
+  textColor: string;
+  darkTextColor: string;
+}) => {
   return (
     // ********* mine *********
     // <div className="flex gap-2 items-center">
@@ -15,7 +21,9 @@ const Logo = ({ textColor }: { textColor: string }) => {
       <div className="w-11 h-11 rounded-[12px] bg-ring flex items-center justify-center font-extrabold text-[16px] text-forest tracking-[-0.5px] shrink-0">
         <HandCoins size={20} />
       </div>
-      <span className={`text-${textColor} font-sora font-bold text-2xl m-0`}>
+      <span
+        className={`text-${textColor} dark:text-${darkTextColor} font-sora font-bold text-2xl m-0`}
+      >
         Finora
       </span>
     </div>

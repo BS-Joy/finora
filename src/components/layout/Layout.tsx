@@ -6,6 +6,7 @@ import Spinner from "../Spinner";
 import Sidebar from "./Sidebar";
 import BottomNavbar from "./BottomNavbar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import Header from "./Header";
 
 const Layout = () => {
   const { user, setUser } = useAuthStore();
@@ -57,6 +58,7 @@ const Layout = () => {
   return (
     <>
       <Sidebar />
+      <Header />
       {isMobile && <BottomNavbar />}
       <Outlet />
     </>

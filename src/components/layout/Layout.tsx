@@ -9,7 +9,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Header from "./Header";
 
 const Layout = () => {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, setUserProfile } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   const { isPending, isError, error } = useQuery({
@@ -20,6 +20,19 @@ const Layout = () => {
         throw new Error(res.error.message);
       }
       setUser(res.data.user);
+
+      // get user profile
+      const { data, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", res.data.user?.id)
+        .single();
+
+      if (profileError) {
+        console.error(profileError);
+      } else {
+        setUserProfile(data);
+      }
       return res.data.user;
     },
   });

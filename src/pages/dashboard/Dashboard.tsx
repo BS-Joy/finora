@@ -1,20 +1,71 @@
+import MobileStatCard from "@/components/dashboard/MobileStatCard";
+import StatsCard from "@/components/shared/StatsCard";
 import { useAuthStore } from "@/store/AuthStore";
-import { motion } from "framer-motion";
+import { currencies } from "@/utils";
+import { DollarSign, Save, TrendingDown, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
 
 const Dashboard = () => {
-  const { user } = useAuthStore();
+  const { user, userProfile, createUserProfile } = useAuthStore();
 
+  useEffect(() => {
+    const createProfileIfNotExists = async () => {
+      await createUserProfile();
+    };
+
+    if (user) {
+      createProfileIfNotExists();
+    }
+  }, [user, createUserProfile]);
+
+  const currencySymbol =
+    currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
   return (
     <section className="p-2">
-      <motion.div
-        className="ml-2 md:ml-69 font-jakarta"
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      >
-        <h1>Welcome to Finora</h1>
-        <p>{user?.id && user?.user_metadata?.name}</p>{" "}
-      </motion.div>
+      <div className="mx-1 md:ml-69 font-jakarta">
+        <div className="hidden md:flex flex-col md:flex-row gap-2">
+          <StatsCard
+            title="Current Balance"
+            value={`${currencySymbol}2,635`}
+            icon={DollarSign}
+            bgColor="bg-primary dark:bg-cream"
+            textColor="text-cream dark:text-primary"
+            iconBg="bg-cream/40 dark:bg-primary/40"
+            iconColor="text-primary dark:text-cream"
+            delay={0.2}
+          />
+          <StatsCard
+            title="Total Income"
+            value={`${currencySymbol}1,200`}
+            icon={TrendingUp}
+            textColor="text-primary/80"
+            bgColor="bg-lime"
+            iconBg="bg-primary/40"
+            iconColor="text-lime"
+            delay={0.4}
+          />
+          <StatsCard
+            title="Total Expenses"
+            value={`${currencySymbol}1,435`}
+            icon={TrendingDown}
+            textColor="destructive"
+            bgColor="bg-red-400/80 dark:bg-red-400"
+            iconBg="bg-cream/40"
+            iconColor="text-red-700/80"
+            delay={0.6}
+          />
+          <StatsCard
+            title="Savings"
+            value="12%"
+            icon={Save}
+            delay={0.8}
+            bgColor="bg-blue-400/80"
+          />
+        </div>
+
+        {/* mobile stat card */}
+        <MobileStatCard />
+      </div>
     </section>
   );
 };

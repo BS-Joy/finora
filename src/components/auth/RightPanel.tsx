@@ -9,10 +9,9 @@ const RightPanel = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const res = await supabase.auth.signInWithOAuth({
+      await supabase.auth.signInWithOAuth({
         provider: "google",
       });
-      console.log(res);
       setLoading(false);
     } catch (error) {
       setLoading(false);

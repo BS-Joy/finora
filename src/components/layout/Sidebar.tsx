@@ -73,7 +73,7 @@ const Sidebar = () => {
             <Button
               variant="destructive"
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-6 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer border-destructive"
+              className="flex items-center gap-3 px-4 py-6 hover:text-red-500 hover:bg-red-300/20 rounded-lg transition-all duration-300 w-full group cursor-pointer dark:border-destructive/60"
             >
               <LogOut
                 size={20}

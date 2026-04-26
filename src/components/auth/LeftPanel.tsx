@@ -65,7 +65,7 @@ const features = [
 const LeftPanel = () => {
   return (
     <motion.div
-      className="w-full md:w-[45%] md:min-h-screen bg-forest flex flex-col justify-between p-7 md:p-12 relative overflow-hidden"
+      className="w-full md:w-[45%] md:min-h-screen bg-[#154f27] dark:bg-[#0e3111] flex flex-col justify-between p-7 md:p-12 relative overflow-hidden"
       initial={{ opacity: 0, x: -40 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.7, ease: "easeInOut" }}
@@ -84,7 +84,7 @@ const LeftPanel = () => {
       />
 
       {/* Logo */}
-      <Logo textColor="cream" />
+      <Logo textColor="cream" darkTextColor="" />
 
       {/* Feature highlights */}
       <motion.div

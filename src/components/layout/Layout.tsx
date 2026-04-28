@@ -10,7 +10,7 @@ import Header from "./Header";
 
 const Layout = () => {
   const { user, setUser, setUserProfile } = useAuthStore();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const { isPending, isError, error } = useQuery({
     queryKey: ["user"],

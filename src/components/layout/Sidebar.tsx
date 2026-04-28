@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { redirect } from "react-router";
 
 const Sidebar = () => {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const { user, setUser } = useAuthStore();
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();

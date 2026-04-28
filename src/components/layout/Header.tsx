@@ -9,7 +9,7 @@ const Header = () => {
   const today = format(new Date(), "d MMMM, yyyy");
 
   return (
-    <header className="ml-2 md:ml-69 flex justify-between items-center py-7 px-4 rounded-lg">
+    <header className="ml-2 lg:ml-69 flex justify-between items-center py-7 px-4 rounded-lg">
       <div className="hidden md:block">
         <h1 className="text-2xl font-bold">
           Hey There, {user?.user_metadata?.name}

@@ -1,3 +1,5 @@
+import { useAuthStore } from "@/store/AuthStore";
+import { currencies } from "@/utils";
 import { motion } from "framer-motion";
 
 const MobileStatCard = ({
@@ -9,7 +11,9 @@ const MobileStatCard = ({
   income?: number;
   expenses?: number;
 }) => {
-  const fmt = (n: number) => "৳" + n.toLocaleString("en-BD");
+  const { userProfile } = useAuthStore();
+  const currencySymbol =
+    currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
 
   return (
     <motion.div
@@ -31,7 +35,7 @@ const MobileStatCard = ({
           Current Balance
         </p>
         <p className="font-jakarta text-[36px] font-extrabold tracking-tight leading-[1.1] text-cream">
-          {fmt(balance)}
+          {currencySymbol} {balance.toLocaleString()}
         </p>
       </div>
 
@@ -52,7 +56,7 @@ const MobileStatCard = ({
             Income
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
-            {fmt(income)}
+            {currencySymbol} {income.toLocaleString()}
           </span>
         </div>
 
@@ -68,7 +72,7 @@ const MobileStatCard = ({
             Expenses
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
-            {fmt(expenses)}
+            {currencySymbol} {expenses.toLocaleString()}
           </span>
         </div>
       </div>

@@ -149,6 +149,7 @@
   --color-forest-dark: var(--forest-dark);
   --color-cream: var(--cream);
   --color-cream-dark: var(--cream-dark);
+  --breakpoint-pre-sm: 500px;
 }
 
 @layer base {

@@ -6,7 +6,7 @@ import NavLinkItem from "./NavLinkItem";
 const BottomNavbar = () => {
   const currentPath = useLocation().pathname;
   return (
-    <ul className="flex fixed bottom-0 left-0 right-0 bg-card border-t justify-between">
+    <ul className="flex fixed bottom-0 left-0 right-0 bg-card border-t justify-between z-100">
       {sidebarNavLinks.map((page: PageObject) => {
         if (page.title === "Button") {
           return (

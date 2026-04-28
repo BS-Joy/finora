@@ -1,3 +1,5 @@
+import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
+import SpendingByCategoryChart from "@/components/charts/SpendingByCategoryChart";
 import MobileStatCard from "@/components/dashboard/MobileStatCard";
 import StatsCard from "@/components/shared/StatsCard";
 import { useAuthStore } from "@/store/AuthStore";
@@ -21,8 +23,8 @@ const Dashboard = () => {
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
   return (
-    <section className="p-2">
-      <div className="mx-1 md:ml-69 font-jakarta">
+    <section className="p-2 relative bottom-22 lg:bottom-0 mt-20 lg:mt-0">
+      <div className="mx-1 lg:ml-69 font-jakarta">
         <div className="hidden md:flex flex-col md:flex-row gap-2">
           <StatsCard
             title="Current Balance"
@@ -65,6 +67,12 @@ const Dashboard = () => {
 
         {/* mobile stat card */}
         <MobileStatCard />
+
+        {/* income vs expenses chart */}
+        <div className="hidden pre-sm:flex flex-col lg:flex-row mt-8 gap-6">
+          <IncomeExpenseChart />
+          <SpendingByCategoryChart />
+        </div>
       </div>
     </section>
   );

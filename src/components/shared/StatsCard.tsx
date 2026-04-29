@@ -27,7 +27,7 @@ const StatsCard = ({
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: delay }}
-      className={`rounded-3xl p-5 pb-7 ${bgColor || "bg-lime"} w-full`}
+      className={`rounded-3xl p-6 pb-7 ${bgColor || "bg-lime"} w-full border`}
     >
       <div className="flex items-center justify-between mb-2">
         <p className={`text-xs font-semibold ${textColor || "text-forest/70"}`}>

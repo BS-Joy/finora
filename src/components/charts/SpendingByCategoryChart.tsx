@@ -11,9 +11,9 @@ const data = [
 
 export default function SpendingChart() {
   return (
-    <div className="rounded-lg p-6 bg-card w-full border">
+    <div className="rounded-lg p-8 bg-card w-full border">
       {/* Header */}
-      <div className="mb-4">
+      <div className="mb-4 dark:text-gray-300 text-gray-600 font-jakarta">
         <h2 className="text-xl font-semibold tracking-tight">
           Spending by Category
         </h2>
@@ -23,7 +23,7 @@ export default function SpendingChart() {
       {/* Chart + Legend Row */}
       <div className="flex items-center justify-center gap-4 md:gap-0 sm:justify-around md:mt-10">
         {/* Donut Chart */}
-        <div className="relative shrink-0 w-40 md:w-50 h-50 lg:w-64 lg:h-64">
+        <div className="relative shrink-0 w-40 h-40 md:w-52 md:h-52 lg:w-64 lg:h-64">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

@@ -1,6 +1,7 @@
 import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
 import SpendingByCategoryChart from "@/components/charts/SpendingByCategoryChart";
 import MobileStatCard from "@/components/dashboard/MobileStatCard";
+import RecentTransactionsTable from "@/components/dashboard/RecentTransactionsTable";
 import StatsCard from "@/components/shared/StatsCard";
 import { useAuthStore } from "@/store/AuthStore";
 import { currencies } from "@/utils";
@@ -23,9 +24,9 @@ const Dashboard = () => {
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
   return (
-    <section className="p-2 relative bottom-22 lg:bottom-0 mt-20 lg:mt-0">
+    <section className="px-6 py-4 relative bottom-22 lg:bottom-0 mt-20 lg:mt-0 lg:mb-4">
       <div className="mx-1 lg:ml-69 font-jakarta">
-        <div className="hidden md:flex flex-col md:flex-row gap-2">
+        <div className="hidden md:flex flex-col md:flex-row gap-6">
           <StatsCard
             title="Current Balance"
             value={`${currencySymbol}2,635`}
@@ -69,9 +70,17 @@ const Dashboard = () => {
         <MobileStatCard />
 
         {/* income vs expenses chart */}
-        <div className="hidden pre-sm:flex flex-col lg:flex-row mt-8 gap-6">
+        <div className="hidden pre-sm:flex flex-col lg:flex-row mt-6 gap-6">
           <IncomeExpenseChart />
           <SpendingByCategoryChart />
+        </div>
+
+        {/* recent transactions table */}
+        <div className="mt-6 bg-card border rounded-lg p-8">
+          <h2 className="text-xl font-semibold font-jakarta mb-4 dark:text-gray-300 text-gray-600">
+            Recent Transactions
+          </h2>
+          <RecentTransactionsTable />
         </div>
       </div>
     </section>

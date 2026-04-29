@@ -22,11 +22,11 @@ const chartData = [
 const IncomeExpenseChart = ({ isDark = false }) => {
   return (
     <div className="w-full bg-card border p-8 rounded-lg md:max-h-150">
-      <h3
-        className={`${isDark ? "text-gray-300" : "text-gray-600"} font-jakarta text-xl font-semibold mb-8`}
-      >
-        Income vs Expenses
-      </h3>
+      <div className="mb-8 dark:text-gray-300 text-gray-600 font-jakarta">
+        <h3 className="text-xl font-semibold">Income vs Expenses</h3>
+        <p className="text-gray-400 text-sm mt-0.5">Last 6 months</p>
+      </div>
+
       {/* Chart */}
       <ResponsiveContainer width="100%" aspect={3}>
         <AreaChart data={chartData}>

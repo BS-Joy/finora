@@ -4,7 +4,7 @@ import Spinner from "../Spinner";
 import { supabase } from "@/lib/supabase";
 
 const RightPanel = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleGoogleSignIn = async () => {
     setLoading(true);

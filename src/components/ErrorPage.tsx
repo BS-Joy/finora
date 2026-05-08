@@ -162,7 +162,7 @@ const ERROR_META = {
 
 export default function ErrorPage() {
   const error = useRouteError();
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   // Extract error information from route error
   let errorCode: number | string = 404;

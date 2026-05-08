@@ -8,6 +8,7 @@ import ErrorPage from "./components/ErrorPage";
 import ExpensesPage from "./pages/expense/ExpensesPage";
 import SettingsPage from "./pages/setting/SettingsPage";
 import { ThemeProvider } from "./components/theme-provider";
+import { supabase } from "./lib/supabase";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,24 @@ function App() {
         {
           path: "/",
           element: <Dashboard />,
+          loader: async () => {
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
+            const { data, error } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("user_id", user?.id)
+              .maybeSingle();
+
+            if (error) {
+              console.error("Error on checking user profile existence:", error);
+              return;
+            }
+
+            const profileExists = data && data.length > 0;
+            return profileExists;
+          },
         },
         {
           path: "/income",

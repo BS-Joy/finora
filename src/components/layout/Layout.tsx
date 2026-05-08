@@ -26,7 +26,7 @@ const Layout = () => {
         .from("profiles")
         .select("*")
         .eq("user_id", res.data.user?.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) {
         console.error(profileError);

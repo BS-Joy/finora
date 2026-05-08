@@ -2,24 +2,19 @@ import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
 import SpendingByCategoryChart from "@/components/charts/SpendingByCategoryChart";
 import MobileStatCard from "@/components/dashboard/MobileStatCard";
 import RecentTransactionsTable from "@/components/dashboard/RecentTransactionsTable";
+import ProfileCreationForm from "@/components/profile/ProfileCreationForm";
 import StatsCard from "@/components/shared/StatsCard";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuthStore } from "@/store/AuthStore";
 import { currencies } from "@/utils";
-import { DollarSign, Save, TrendingDown, TrendingUp } from "lucide-react";
-import { useEffect } from "react";
+import { DollarSign, TrendingDown, TrendingUp, Vault } from "lucide-react";
+import { useState } from "react";
+import { useLoaderData } from "react-router";
 
 const Dashboard = () => {
-  const { user, userProfile, createUserProfile } = useAuthStore();
-
-  useEffect(() => {
-    const createProfileIfNotExists = async () => {
-      await createUserProfile();
-    };
-
-    if (user) {
-      createProfileIfNotExists();
-    }
-  }, [user, createUserProfile]);
+  const profileExist: boolean = useLoaderData();
+  const [showDialog, setShowDialog] = useState<boolean>(!profileExist);
+  const { userProfile } = useAuthStore();
 
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
@@ -60,7 +55,7 @@ const Dashboard = () => {
           <StatsCard
             title="Savings"
             value="12%"
-            icon={Save}
+            icon={Vault}
             delay={0.8}
             bgColor="bg-blue-400/80"
           />
@@ -83,6 +78,12 @@ const Dashboard = () => {
           <RecentTransactionsTable />
         </div>
       </div>
+      <Dialog open={showDialog}>
+        <DialogContent showCloseButton={false}>
+          <DialogTitle className="hidden">Create Profile</DialogTitle>
+          <ProfileCreationForm setShowDialog={setShowDialog} />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

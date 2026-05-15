@@ -9,13 +9,16 @@ import ExpensesPage from "./pages/expense/ExpensesPage";
 import SettingsPage from "./pages/setting/SettingsPage";
 import { ThemeProvider } from "./components/theme-provider";
 import { supabase } from "./lib/supabase";
+import { useState } from "react";
+import { Toaster } from "./components/ui/sonner";
 
 const queryClient = new QueryClient();
 
 function App() {
+  const [noProfile, setNoProfile] = useState<boolean>(false);
   const router = createBrowserRouter([
     {
-      element: <Layout />,
+      element: <Layout noProfile={noProfile} />,
       errorElement: <ErrorPage />,
       children: [
         {
@@ -36,7 +39,9 @@ function App() {
               return;
             }
 
-            const profileExists = data && data.length > 0;
+            const profileExists = data?.id ? true : false;
+            setNoProfile(!profileExists);
+
             return profileExists;
           },
         },
@@ -64,6 +69,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="finora-theme">
         <RouterProvider router={router} />
+        <Toaster position="top-center" richColors />
       </ThemeProvider>
     </QueryClientProvider>
   );

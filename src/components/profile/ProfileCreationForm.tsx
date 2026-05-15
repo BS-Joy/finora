@@ -82,7 +82,9 @@ const ProfileCreationForm = ({
     <div>
       <form onSubmit={handleSubmit(submitForm)}>
         <FieldSet>
-          <FieldLegend>Create Profile First</FieldLegend>
+          <FieldLegend className="mb-4 font-semibold">
+            Create Profile & Wallet to continue
+          </FieldLegend>
           <FieldGroup>
             {/* currency field */}
             <FormField

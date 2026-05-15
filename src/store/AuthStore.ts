@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { create } from "zustand";
 import type { User, UserMetadata } from "@supabase/supabase-js";
 import { currencies } from "@/utils";
+import type { WalletSchema } from "@/types";
 
 interface UserInterface extends UserMetadata {
   id: string;
@@ -11,6 +12,8 @@ interface Profile {
   id: string;
   user_id: string;
   currency: string;
+  current_wallet_id: string;
+  current_wallet: WalletSchema;
   created_at: string;
 }
 

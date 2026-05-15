@@ -26,7 +26,7 @@ export interface Currency {
 export interface WalletIconsSchema {
   name: string;
   label: string;
-  icon: LucideIcon
+  icon: LucideIcon;
 }
 
 export const currencies: Currency[] = [
@@ -49,9 +49,8 @@ export const currencies: Currency[] = [
   { code: "RUB", currency: "Russian Ruble", symbol: "₽" },
   { code: "TRY", currency: "Turkish Lira", symbol: "₺" },
   { code: "ZAR", currency: "South African Rand", symbol: "R" },
-  { code: "BRL", currency: "Brazilian Real", symbol: "R$" }
+  { code: "BRL", currency: "Brazilian Real", symbol: "R$" },
 ];
-
 
 export const walletIcons: WalletIconsSchema[] = [
   {
@@ -129,4 +128,82 @@ export const walletIcons: WalletIconsSchema[] = [
     label: "Crypto",
     icon: Bitcoin,
   },
+];
+
+export const categoryIcons: string[] = [
+  "🍔",
+  "🍕",
+  "🚗",
+  "🚕",
+  "🛍️",
+  "💊",
+  "🏥",
+  "💡",
+  "🔌",
+  "🎮",
+  "💰",
+  "📈",
+  "💵",
+  "🐷",
+  "💳",
+  "🛡️",
+  "🏠",
+  "🛒",
+  "🍎",
+  "💧",
+  "🌐",
+  "📱",
+  "⛽",
+  "🔧",
+  "☕",
+  "🍻",
+  "🍿",
+  "🏋️",
+  "📚",
+  "🎨",
+  "🎵",
+  "📺",
+  "✈️",
+  "🚆",
+  "🚲",
+  "🏨",
+  "🗺️",
+  "💇",
+  "🧴",
+  "🐾",
+  "🎁",
+  "🧸",
+  "⚖️",
+  "🎓",
+  "🎒",
+  "💻",
+  "💼",
+  "✒️",
+  "🧹",
+  "🧺",
+  "🪴",
+  "🏢",
+  "🛠️",
+  "🧘",
+  "🦷",
+  "👓",
+  "🧼",
+  "🧖",
+  "🍼",
+  "🏫",
+  "👩‍👧‍👦",
+  "🏧",
+  "🧾",
+  "💎",
+  "🤝",
+  "⛪",
+  "🪙",
+  "🎟️",
+  "👠",
+  "👔",
+  "⌚",
+  "🚬",
+  "🎲",
+  "🛳️",
+  "❓",
 ];

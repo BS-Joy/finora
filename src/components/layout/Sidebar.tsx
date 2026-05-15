@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { supabase } from "@/lib/supabase";
 import { redirect } from "react-router";
+import WalletSelector from "./WalletSelector";
 
 const Sidebar = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -44,8 +45,8 @@ const Sidebar = () => {
 
           {/* sidebar footer */}
           <div className="mx-3 pb-8 space-y-6">
-            {user && (
-              <div className="flex items-center gap-3 px-4 py-3 bg-accent/80 rounded-lg border border-white/5 text-primarypulse">
+            {/* {user && (
+              <div className="flex items-center gap-3 px-4 py-3 bg-accent/80 rounded-lg border border-white/5 text-primary">
                 <div className="w-10 h-10 rounded-lg overflow-hidden bg-primary/20 flex items-center justify-center border border-primary">
                   {user.user_metadata?.avatar_url ? (
                     <img
@@ -69,8 +70,11 @@ const Sidebar = () => {
                   <span className="text-[10px] truncate">{user.email}</span>
                 </div>
               </div>
-            )}
-            <Button
+            )} */}
+            <div className="hidden lg:block">
+              <WalletSelector customClass="w-full py-2.5 bg-accent/80" />
+            </div>
+            {/* <Button
               onClick={handleLogout}
               className="flex items-center gap-3 px-4 py-6 bg-transparent text-red-500 hover:bg-red-500/20 rounded-lg transition-all duration-300 w-full group cursor-pointer dark:border-destructive/60"
             >
@@ -79,7 +83,7 @@ const Sidebar = () => {
                 className="group-hover:-translate-x-1 transition-transform"
               />
               <span className="font-medium">Sign Out</span>
-            </Button>
+            </Button> */}
           </div>
         </motion.aside>
       )}

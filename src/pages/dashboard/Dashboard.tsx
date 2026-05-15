@@ -2,6 +2,7 @@ import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
 import SpendingByCategoryChart from "@/components/charts/SpendingByCategoryChart";
 import MobileStatCard from "@/components/dashboard/MobileStatCard";
 import RecentTransactionsTable from "@/components/dashboard/RecentTransactionsTable";
+import WalletSelector from "@/components/layout/WalletSelector";
 import ProfileCreationForm from "@/components/profile/ProfileCreationForm";
 import StatsCard from "@/components/shared/StatsCard";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -14,13 +15,14 @@ import { useLoaderData } from "react-router";
 const Dashboard = () => {
   const profileExist: boolean = useLoaderData();
   const [showDialog, setShowDialog] = useState<boolean>(!profileExist);
-  const { userProfile } = useAuthStore();
+  const { userProfile, user } = useAuthStore();
 
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
   return (
-    <section className="px-6 py-4 relative bottom-22 lg:bottom-0 mt-20 lg:mt-0 lg:mb-4">
+    <section className="pre-sm:px-6 px-3 pre-sm:pb-4 relative bottom-22 lg:bottom-0 mt-22 lg:mt-0 lg:mb-4">
       <div className="mx-1 lg:ml-69 font-jakarta">
+        {/* stat cards */}
         <div className="hidden md:flex flex-col md:flex-row gap-6">
           <StatsCard
             title="Current Balance"
@@ -61,6 +63,15 @@ const Dashboard = () => {
           />
         </div>
 
+        {/* mobile header */}
+        <div className="flex md:hidden justify-between py-4">
+          <div>
+            <h1 className="font-normal text-sm">Welcome</h1>
+            <p className="font-semibold text-lg">{user?.user_metadata?.name}</p>
+          </div>
+          <WalletSelector customClass="py-0" />
+        </div>
+
         {/* mobile stat card */}
         <MobileStatCard />
 
@@ -79,7 +90,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Dialog open={showDialog}>
-        <DialogContent showCloseButton={false}>
+        <DialogContent showCloseButton={false} overlayBG="bg-primary">
           <DialogTitle className="hidden">Create Profile</DialogTitle>
           <ProfileCreationForm setShowDialog={setShowDialog} />
         </DialogContent>

@@ -7,9 +7,11 @@ import Sidebar from "./Sidebar";
 import BottomNavbar from "./BottomNavbar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Header from "./Header";
+import { useTransactionStore } from "@/store/TransactionStore";
 
-const Layout = () => {
+const Layout = ({ noProfile }: { noProfile: boolean }) => {
   const { user, setUser, setUserProfile } = useAuthStore();
+  const { setCategories } = useTransactionStore();
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const { isPending, isError, error } = useQuery({
@@ -24,7 +26,7 @@ const Layout = () => {
       // get user profile
       const { data, error: profileError } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*, current_wallet: current_wallet_id (*)")
         .eq("user_id", res.data.user?.id)
         .maybeSingle();
 
@@ -33,6 +35,22 @@ const Layout = () => {
       } else {
         setUserProfile(data);
       }
+
+      // get all categories
+      const { data: categories, error: categoryErrors } = await supabase
+        .from("categories")
+        .select()
+        .or(`user_id.eq.${res.data.user?.id}, user_id.is.null`);
+
+      if (categoryErrors) {
+        console.log(categoryErrors);
+        throw error;
+      }
+
+      if (categories) {
+        setCategories(categories);
+      }
+
       return res.data.user;
     },
   });
@@ -72,8 +90,8 @@ const Layout = () => {
     <>
       <Sidebar />
       <Header />
-      {isMobile && <BottomNavbar />}
       <Outlet />
+      {isMobile && !noProfile && <BottomNavbar />}
     </>
   );
 };

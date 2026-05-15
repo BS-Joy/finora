@@ -18,3 +18,14 @@ export interface WalletSchema {
     created_at?: string;
     updated_at?: string;
 }
+
+export interface CategorySchema {
+    id: string;
+    user_id: string | null;
+    name: string;
+    type: string;
+    color: string;
+    icon: string;
+}
+
+export type TransactionType = "income" | "expense";

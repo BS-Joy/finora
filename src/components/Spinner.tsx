@@ -1,15 +1,20 @@
-const Spinner = ({ light, size = "6" }: { light?: boolean; size?: string }) => {
+import { cn } from "@/lib/utils";
+
+const Spinner = ({
+  size = "6",
+  darkBg,
+}: {
+  size?: string;
+  darkBg?: boolean;
+}) => {
   return (
     <>
-      {light ? (
-        <div
-          className={`w-${size} h-${size} border-4 border-transparent text-accent text-4xl animate-spin flex items-center justify-center border-t-accent rounded-full`}
-        ></div>
-      ) : (
-        <div
-          className={`w-${size} h-${size} border-4 border-transparent text-primary text-2xl animate-spin flex items-center justify-center border-t-primary rounded-full`}
-        ></div>
-      )}
+      <div
+        className={cn(
+          `w-${size} h-${size} border-4 border-transparent text-primary dark:text-accent text-4xl animate-spin flex items-center justify-center border-t-primary dark:border-t-accent rounded-full`,
+          darkBg && "border-t-accent dark:border-t-primary",
+        )}
+      ></div>
     </>
   );
 };

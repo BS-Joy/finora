@@ -2,25 +2,25 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Logo from "../Logo";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarNavigation from "./SidebarNavigation";
-import { useAuthStore } from "@/store/AuthStore";
-import { LogOut } from "lucide-react";
-import { Button } from "../ui/button";
-import { supabase } from "@/lib/supabase";
-import { redirect } from "react-router";
+// import { useAuthStore } from "@/store/AuthStore";
+// import { LogOut } from "lucide-react";
+// import { Button } from "../ui/button";
+// import { supabase } from "@/lib/supabase";
+// import { redirect } from "react-router";
 import WalletSelector from "./WalletSelector";
 
 const Sidebar = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const { user, setUser } = useAuthStore();
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Logout error:", error);
-    } else {
-      setUser(null);
-      redirect("/login");
-    }
-  };
+  // const { user, setUser } = useAuthStore();
+  // const handleLogout = async () => {
+  //   const { error } = await supabase.auth.signOut();
+  //   if (error) {
+  //     console.error("Logout error:", error);
+  //   } else {
+  //     setUser(null);
+  //     redirect("/login");
+  //   }
+  // };
   return (
     <AnimatePresence>
       {isDesktop && (

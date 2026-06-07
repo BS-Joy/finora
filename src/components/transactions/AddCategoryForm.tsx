@@ -3,17 +3,25 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { Field, FieldGroup, FieldSet } from "../ui/field";
 import FormField from "../shared/FormField";
 import { Input } from "../ui/input";
+import CategoryColorPicker from "./CategoryColorPicker";
 import { useAuthStore } from "@/store/AuthStore";
-import TransactionCategorySelector from "./TransactionCategorySelector";
+import { categoryIcons } from "@/utils";
 import { ArrowDown } from "lucide-react";
-import { useTransactionStore } from "@/store/TransactionStore";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 import { ScrollArea } from "../ui/scroll-area";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Spinner from "../Spinner";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import CategoryIconSelector from "./CategoryIconSelector";
 
 interface AddTransactionFormPropsTypes {
   transactionType: TransactionType;
@@ -33,7 +41,6 @@ const AddCategoryForm = ({
 }: AddTransactionFormPropsTypes) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { userProfile, user } = useAuthStore();
-  const { categories } = useTransactionStore();
 
   const {
     register,
@@ -41,49 +48,49 @@ const AddCategoryForm = ({
     control,
     formState: { errors },
   } = useForm<FormInputTypes>({
-    // defaultValues: {
-    //   title: "",
-    //   amount: "",
-    //   category_id: categories.filter((cat) => cat.type === transactionType)[0]
-    //     .id,
-    // },
+    defaultValues: {
+      name: "",
+      type: transactionType,
+      color: "",
+    },
   });
 
   const handleSubmitForm: SubmitHandler<FormInputTypes> = async (data) => {
-    console.log(data);
-    // setLoading(true);
-    // const formData = {
-    //   ...data,
-    //   amount: Number(data.amount),
-    //   type: transactionType,
-    //   user_id: user?.id,
-    //   wallet_id: userProfile?.current_wallet_id,
-    // };
-    // const res = await supabase
-    //   .from("transactions")
-    //   .insert(formData)
-    //   .select("*")
-    //   .single();
-    // if (res.error) {
-    //   setLoading(false);
-    //   toast.error("Something went wrong during insert transaction!");
-    //   console.log(res.error);
-    // }
-    // if (res?.data) {
-    //   setLoading(false);
-    //   toast.success("Transaction added successfully.");
-    //   // console.log(res?.data);
-    //   closeDialog();
-    // }
+    setLoading(true);
+    const formData = {
+      ...data,
+      type: transactionType,
+      user_id: user?.id,
+      wallet_id: userProfile?.current_wallet_id,
+    };
+
+    const res = await supabase
+      .from("transactions")
+      .insert(formData)
+      .select("*")
+      .single();
+
+    if (res.error) {
+      setLoading(false);
+      toast.error("Something went wrong during insert transaction!");
+      console.log(res.error);
+    }
+
+    if (res?.data) {
+      setLoading(false);
+      toast.success("Transaction added successfully.");
+      // console.log(res?.data);
+      closeDialog();
+    }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit(handleSubmitForm)}>
+      <form onSubmit={handleSubmit(handleSubmitForm)} className="p-6">
         <FieldSet>
           <ScrollArea className="h-[45vh] p-3 pb-0 overflow-hidden border-y">
             <FieldGroup className="gap-3">
-              {/* name of the icon */}
+              {/* title of the category */}
               <FormField
                 labelClassName="text-base font-semibold"
                 label="Category Name:"
@@ -93,29 +100,34 @@ const AddCategoryForm = ({
                 <Input
                   type="text"
                   className="h-13 px-3 md:text-base font-semibold border border-accent focus:shadow focus:shadow-accent"
-                  placeholder="e.g. Salary of April, 2026"
+                  placeholder="e.g. Side Hustle"
                   {...register("name", {
                     required: "Category must have a name",
                   })}
                 />
               </FormField>
 
-              {/* select color */}
+              {/* amount */}
               <FormField
-                label="Color:"
-                name="color"
+                label="Transaction Type:"
+                name="type"
                 labelClassName="text-base font-semibold"
                 errors={errors}
               >
-                <Input
-                  type="color"
-                  className="border-none shadow-none md:text-lg font-bold"
-                  placeholder="0.00"
-                  {...register("color")}
-                />
+                <Select defaultValue={transactionType}>
+                  <SelectTrigger className="w-45 py-6">
+                    <SelectValue placeholder="Transaction Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="income">Income</SelectItem>
+                      <SelectItem value="expense">Expense</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormField>
 
-              {/* category icon */}
+              {/* Category icon */}
               <FormField
                 label="Select Icon:"
                 labelClassName="text-base font-semibold"
@@ -126,7 +138,7 @@ const AddCategoryForm = ({
                   name="icon"
                   control={control}
                   rules={{
-                    required: "Please select a category of you transaction.",
+                    required: "Please select a icon of your category.",
                   }}
                   render={({ field }) => {
                     // console.log(field);
@@ -134,21 +146,18 @@ const AddCategoryForm = ({
                       <div>
                         <div className="relative">
                           {/* category selector */}
-                          <TransactionCategorySelector
+                          <CategoryIconSelector
                             value={field.value}
                             onChange={field.onChange}
                             transactionType={transactionType}
                           />
-                          {categories.filter(
-                            (cat) => cat.type === transactionType,
-                          ).length > 4 && (
+                          {categoryIcons.length > 4 && (
                             <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-background to-transparent pointer-events-none" />
                           )}
+
                           {/* Bottom fade hint — signals more content below */}
                         </div>
-                        {categories.filter(
-                          (cat) => cat.type === transactionType,
-                        ).length > 4 && (
+                        {categoryIcons.length > 4 && (
                           <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
                             <span className="animate-bounce">
                               <ArrowDown size={12} />
@@ -157,7 +166,7 @@ const AddCategoryForm = ({
                           </p>
                         )}
                         {errors.icon && (
-                          <span>Error on category icon selection</span>
+                          <span>Error on category selection</span>
                         )}
                       </div>
                     );
@@ -165,18 +174,25 @@ const AddCategoryForm = ({
                 />
               </FormField>
 
-              {/* transaction notes */}
+              {/* category color */}
               <FormField
-                name="type"
+                labelClassName="text-base font-semibold"
+                label="Category Color:"
+                name="color"
                 errors={errors}
-                label="Type"
-                isOptional={true}
-                labelClassName="font-semibold text-base"
               >
-                <Textarea
-                  {...register("type")}
-                  className="border border-accent focus:shadow focus:shadow-accent md:text-base font-semibold"
-                  placeholder="Any note for this transaction?"
+                <Controller
+                  name="color"
+                  control={control}
+                  rules={{
+                    required: "Please select a color for your category.",
+                  }}
+                  render={({ field }) => (
+                    <CategoryColorPicker
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </FormField>
             </FieldGroup>

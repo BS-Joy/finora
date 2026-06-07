@@ -17,9 +17,9 @@ const MobileStatCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      initial={{ opacity: 0, translateX: 10 }}
+      animate={{ opacity: 1, translateX: 0 }}
+      transition={{ duration: 0.35, ease: "easeIn", delay: 0.1 }}
       className="w-full rounded-[18px] p-5 flex md:hidden flex-col gap-4"
       style={{
         background:

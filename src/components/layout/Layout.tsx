@@ -15,7 +15,7 @@ const Layout = ({ noProfile }: { noProfile: boolean }) => {
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const { isPending, isError, error } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", "categories"],
     queryFn: async () => {
       const res = await supabase.auth.getUser();
       if (res.error) {

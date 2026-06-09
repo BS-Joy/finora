@@ -24,7 +24,11 @@ export default function SpendingChart() {
       <div className="flex items-center justify-center gap-4 md:gap-0 sm:justify-around md:mt-10">
         {/* Donut Chart */}
         <div className="relative shrink-0 w-40 h-40 md:w-52 md:h-52 lg:w-64 lg:h-64">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            initialDimension={{ width: 500, height: 300 }}
+          >
             <PieChart>
               <Pie
                 data={data}

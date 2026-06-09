@@ -9,7 +9,8 @@ import { categoryIcons } from "@/utils";
 import { ArrowDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useDebounce from "@/hooks/useDebounce";
 import { supabase } from "@/lib/supabase";
 import Spinner from "../Spinner";
 import { toast } from "sonner";
@@ -24,7 +25,6 @@ import {
 import CategoryIconSelector from "./CategoryIconSelector";
 
 interface AddTransactionFormPropsTypes {
-  transactionType: TransactionType;
   closeDialog: () => void;
 }
 
@@ -35,12 +35,45 @@ interface FormInputTypes {
   color: string;
 }
 
-const AddCategoryForm = ({
-  transactionType,
-  closeDialog,
-}: AddTransactionFormPropsTypes) => {
+const AddCategoryForm = ({ closeDialog }: AddTransactionFormPropsTypes) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { userProfile, user } = useAuthStore();
+  const { user } = useAuthStore();
+  const [categoryName, setCategoryName] = useState<string>("");
+  const [categoryNameError, setCategoryNameError] = useState<string | null>(
+    null,
+  );
+  const debouncedCategoryName = useDebounce(categoryName, 500);
+
+  useEffect(() => {
+    const checkCategoryName = async () => {
+      if (debouncedCategoryName) {
+        const { data, error } = await supabase
+          .from("categories")
+          .select("name")
+          .eq("name", debouncedCategoryName)
+          .or(`user_id.eq.${user?.id},user_id.is.null`)
+          .maybeSingle();
+
+        if (data) {
+          setCategoryNameError(
+            "This category already exists. Please use a different name.",
+          );
+        } else {
+          setCategoryNameError(null);
+        }
+
+        if (error) {
+          console.error("Error checking category name:", error);
+          setCategoryNameError(
+            "An error occurred while checking the category name. Please try again.",
+          );
+        }
+      } else {
+        setCategoryNameError(null);
+      }
+    };
+    checkCategoryName();
+  }, [debouncedCategoryName, user?.id]);
 
   const {
     register,
@@ -50,8 +83,8 @@ const AddCategoryForm = ({
   } = useForm<FormInputTypes>({
     defaultValues: {
       name: "",
-      type: transactionType,
-      color: "",
+      type: "income",
+      color: "#CBEF43",
     },
   });
 
@@ -59,26 +92,31 @@ const AddCategoryForm = ({
     setLoading(true);
     const formData = {
       ...data,
-      type: transactionType,
       user_id: user?.id,
-      wallet_id: userProfile?.current_wallet_id,
     };
 
+    console.log(formData);
+
+    if (categoryNameError) {
+      toast.error("Please resolve the category name error first.");
+      return;
+    }
+
     const res = await supabase
-      .from("transactions")
+      .from("categories")
       .insert(formData)
       .select("*")
       .single();
 
     if (res.error) {
       setLoading(false);
-      toast.error("Something went wrong during insert transaction!");
+      toast.error("Something went wrong during creating category!");
       console.log(res.error);
     }
 
     if (res?.data) {
       setLoading(false);
-      toast.success("Transaction added successfully.");
+      toast.success("Category added successfully.");
       // console.log(res?.data);
       closeDialog();
     }
@@ -90,7 +128,7 @@ const AddCategoryForm = ({
         <FieldSet>
           <ScrollArea className="h-[45vh] p-3 pb-0 overflow-hidden border-y">
             <FieldGroup className="gap-3">
-              {/* title of the category */}
+              {/* name of the category */}
               <FormField
                 labelClassName="text-base font-semibold"
                 label="Category Name:"
@@ -103,28 +141,65 @@ const AddCategoryForm = ({
                   placeholder="e.g. Side Hustle"
                   {...register("name", {
                     required: "Category must have a name",
+                    onChange: (e) => setCategoryName(e.target.value),
                   })}
                 />
+                {categoryNameError && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {categoryNameError}
+                  </p>
+                )}
               </FormField>
 
-              {/* amount */}
+              {/* type */}
               <FormField
                 label="Transaction Type:"
                 name="type"
                 labelClassName="text-base font-semibold"
                 errors={errors}
               >
-                <Select defaultValue={transactionType}>
-                  <SelectTrigger className="w-45 py-6">
-                    <SelectValue placeholder="Transaction Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="income">Income</SelectItem>
-                      <SelectItem value="expense">Expense</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="w-45 py-6 border border-accent focus:shadow focus:shadow-accent">
+                        <SelectValue placeholder="Transaction Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="income">Income</SelectItem>
+                          <SelectItem value="expense">Expense</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </FormField>
+
+              {/* category color */}
+              <FormField
+                labelClassName="text-base font-semibold"
+                label="Category Color:"
+                name="color"
+                errors={errors}
+              >
+                <Controller
+                  name="color"
+                  control={control}
+                  rules={{
+                    required: "Please select a color for your category.",
+                  }}
+                  render={({ field }) => (
+                    <CategoryColorPicker
+                      value={field.value || "#CBEF43"}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
               </FormField>
 
               {/* Category icon */}
@@ -149,7 +224,6 @@ const AddCategoryForm = ({
                           <CategoryIconSelector
                             value={field.value}
                             onChange={field.onChange}
-                            transactionType={transactionType}
                           />
                           {categoryIcons.length > 4 && (
                             <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-background to-transparent pointer-events-none" />
@@ -165,34 +239,12 @@ const AddCategoryForm = ({
                             Scroll to see all the categories
                           </p>
                         )}
-                        {errors.icon && (
+                        {/* {errors.icon && (
                           <span>Error on category selection</span>
-                        )}
+                        )} */}
                       </div>
                     );
                   }}
-                />
-              </FormField>
-
-              {/* category color */}
-              <FormField
-                labelClassName="text-base font-semibold"
-                label="Category Color:"
-                name="color"
-                errors={errors}
-              >
-                <Controller
-                  name="color"
-                  control={control}
-                  rules={{
-                    required: "Please select a color for your category.",
-                  }}
-                  render={({ field }) => (
-                    <CategoryColorPicker
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
                 />
               </FormField>
             </FieldGroup>
@@ -206,7 +258,7 @@ const AddCategoryForm = ({
                   <Spinner darkBg /> Saving
                 </>
               ) : (
-                "Save"
+                "Create Category"
               )}
             </Button>
           </Field>

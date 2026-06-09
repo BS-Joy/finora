@@ -5,7 +5,6 @@ import { categoryIcons } from "@/utils";
 interface PropsTypes {
   value: string;
   onChange: (value: string) => void;
-  transactionType: string;
 }
 
 const CategoryIconSelector = ({ value, onChange }: PropsTypes) => {

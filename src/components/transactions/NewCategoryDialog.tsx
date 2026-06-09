@@ -1,24 +1,23 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import type { TransactionType } from "@/types";
 import AddCategoryForm from "./AddCategoryForm";
 
-const NewCategoryDialog = () => {
-  const [showDialog, setShowDialog] = useState(false);
-  const [transactionType, setTransactionType] =
-    useState<TransactionType>("income");
+interface NewCategoryDialogPropsTypes {
+  showDialog: boolean;
+  setShowDialog: (value: boolean) => void;
+}
+
+const NewCategoryDialog = ({
+  showDialog,
+  setShowDialog,
+}: NewCategoryDialogPropsTypes) => {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger asChild>
+      {/* <DialogTrigger asChild>
         <Button
           type="button"
           className={cn(
@@ -36,7 +35,7 @@ const NewCategoryDialog = () => {
             Add category
           </span>
         </Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
       <DialogContent
         className="flex max-h-[80vh] flex-col gap-0 p-0 overflow-hidden sm:max-w-md"
         overlayBG="bg-primary/20"
@@ -45,10 +44,7 @@ const NewCategoryDialog = () => {
           <DialogTitle className="px-6 pt-6 text-xl font-semibold">
             Add Category
           </DialogTitle>
-          <AddCategoryForm
-            closeDialog={() => setShowDialog(false)}
-            transactionType={transactionType}
-          />
+          <AddCategoryForm closeDialog={() => setShowDialog(false)} />
         </DialogHeader>
       </DialogContent>
     </Dialog>

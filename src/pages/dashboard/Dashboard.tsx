@@ -6,6 +6,7 @@ import WalletSelector from "@/components/layout/WalletSelector";
 import ProfileCreationForm from "@/components/profile/ProfileCreationForm";
 import StatsCard from "@/components/shared/StatsCard";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuthStore } from "@/store/AuthStore";
 import { currencies } from "@/utils";
 import { DollarSign, TrendingDown, TrendingUp, Vault } from "lucide-react";
@@ -16,6 +17,8 @@ const Dashboard = () => {
   const profileExist: boolean = useLoaderData();
   const [showDialog, setShowDialog] = useState<boolean>(!profileExist);
   const { userProfile, user } = useAuthStore();
+
+  const isMobile = useMediaQuery("(min-width: 500px)");
 
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
@@ -76,10 +79,12 @@ const Dashboard = () => {
         <MobileStatCard />
 
         {/* income vs expenses chart */}
-        <div className="hidden pre-sm:flex flex-col lg:flex-row mt-6 gap-6">
-          <IncomeExpenseChart />
-          <SpendingByCategoryChart />
-        </div>
+        {isMobile && (
+          <div className="flex flex-col lg:flex-row mt-6 gap-6">
+            <IncomeExpenseChart />
+            <SpendingByCategoryChart />
+          </div>
+        )}
 
         {/* recent transactions table */}
         <div className="mt-6 bg-card border rounded-lg p-8">

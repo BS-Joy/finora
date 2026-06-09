@@ -11,6 +11,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import { supabase } from "./lib/supabase";
 import { useState } from "react";
 import { Toaster } from "./components/ui/sonner";
+import Spinner from "./components/Spinner";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,11 @@ function App() {
     {
       element: <Layout noProfile={noProfile} />,
       errorElement: <ErrorPage />,
+      hydrateFallbackElement: (
+        <div className="flex h-screen justify-center items-center">
+          <Spinner size="16" />
+        </div>
+      ),
       children: [
         {
           path: "/",

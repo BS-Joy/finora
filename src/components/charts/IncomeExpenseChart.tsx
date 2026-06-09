@@ -28,7 +28,12 @@ const IncomeExpenseChart = ({ isDark = false }) => {
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer width="100%" aspect={3}>
+      <ResponsiveContainer
+        width="100%"
+        // height="100%"
+        aspect={3}
+        initialDimension={{ width: 500, height: 300 }}
+      >
         <AreaChart data={chartData}>
           {/* Gradients */}
           <defs>

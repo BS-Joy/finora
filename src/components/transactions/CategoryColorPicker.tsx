@@ -8,22 +8,14 @@ interface CategoryColorPickerProps {
 }
 
 const predefinedColors = [
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFFF00",
-  "#FF00FF",
-  "#00FFFF",
-  "#C0C0C0",
-  "#800000",
-  "#808000",
-  "#008000",
-  "#800080",
-  "#008080",
-  "#000080",
-  "#FFA500",
-  "#A52A2A",
-  "#FFC0CB",
+  "#CBEF43",
+  "#60A5FA",
+  "#F87171",
+  "#FB923C",
+  "#A78BFA",
+  "#34D399",
+  "#F472B6",
+  "#FACC15",
 ];
 
 const CategoryColorPicker = ({ value, onChange }: CategoryColorPickerProps) => {
@@ -57,6 +49,7 @@ const CategoryColorPicker = ({ value, onChange }: CategoryColorPickerProps) => {
         <Input
           type="color"
           className="absolute inset-0 opacity-0 cursor-pointer"
+          required
           value={selectedColor}
           onChange={handleNativeColorPickerChange}
         />

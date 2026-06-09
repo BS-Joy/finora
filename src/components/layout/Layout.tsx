@@ -14,16 +14,26 @@ const Layout = ({ noProfile }: { noProfile: boolean }) => {
   const { setCategories } = useTransactionStore();
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
-  const { isPending, isError, error } = useQuery({
-    queryKey: ["user", "categories"],
+  const {
+    isPending: userPending,
+    isError: userError,
+    error: userErrorMsg,
+  } = useQuery({
+    queryKey: ["user"],
     queryFn: async () => {
       const res = await supabase.auth.getUser();
       if (res.error) {
         throw new Error(res.error.message);
       }
       setUser(res.data.user);
+      return res.data.user;
+    },
+  });
 
-      // get user profile
+  const { isPending: profilePending, isError: profileError } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: async () => {
+      const res = await supabase.auth.getUser();
       const { data, error: profileError } = await supabase
         .from("profiles")
         .select("*, current_wallet: current_wallet_id (*)")
@@ -36,7 +46,14 @@ const Layout = ({ noProfile }: { noProfile: boolean }) => {
         setUserProfile(data);
       }
 
-      // get all categories
+      return data;
+    },
+  });
+
+  const { isPending: categoriesPending, isError: categoriesError } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await supabase.auth.getUser();
       const { data: categories, error: categoryErrors } = await supabase
         .from("categories")
         .select()
@@ -44,16 +61,20 @@ const Layout = ({ noProfile }: { noProfile: boolean }) => {
 
       if (categoryErrors) {
         console.log(categoryErrors);
-        throw error;
+        throw categoryErrors;
       }
 
       if (categories) {
         setCategories(categories);
       }
 
-      return res.data.user;
+      return categories;
     },
   });
+
+  const isPending = userPending || profilePending || categoriesPending;
+  const isError = userError || profileError || categoriesError;
+  const error = userErrorMsg;
 
   if (isPending) {
     return (

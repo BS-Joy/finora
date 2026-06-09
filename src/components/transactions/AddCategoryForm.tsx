@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import CategoryIconSelector from "./CategoryIconSelector";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AddTransactionFormPropsTypes {
   closeDialog: () => void;
@@ -43,6 +44,7 @@ const AddCategoryForm = ({ closeDialog }: AddTransactionFormPropsTypes) => {
     null,
   );
   const debouncedCategoryName = useDebounce(categoryName, 500);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const checkCategoryName = async () => {
@@ -117,6 +119,7 @@ const AddCategoryForm = ({ closeDialog }: AddTransactionFormPropsTypes) => {
     if (res?.data) {
       setLoading(false);
       toast.success("Category added successfully.");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       // console.log(res?.data);
       closeDialog();
     }

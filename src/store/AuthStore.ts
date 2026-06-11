@@ -24,7 +24,9 @@ type AuthState = {
   createUserProfile: () => Promise<void>;
   userProfile: Profile | null;
   setUserProfile: (profile: Profile | null) => void;
-};      
+  currentWallet: WalletSchema | null;
+  setCurrentWallet: (wallet: WalletSchema | null) => void;
+};
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
@@ -41,9 +43,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     set({ user: data.user });
   },
+  currentWallet: null,
+  setCurrentWallet: (wallet) => set({ currentWallet: wallet }),
   createUserProfile: async () => {
-    const {user} = get();
-    const {data, error} = await supabase.from('profiles').select('*').eq('user_id', user?.id);
+    const { user } = get();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", user?.id);
 
     if (error) {
       console.error(error);
@@ -52,7 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     if (!data || data.length === 0) {
       // create profile
-      const { error: insertError } = await supabase.from('profiles').insert({
+      const { error: insertError } = await supabase.from("profiles").insert({
         user_id: user?.id,
         currency: currencies[0].code,
       });
@@ -61,5 +68,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         console.error(insertError);
       }
     }
-  }
+  },
 }));

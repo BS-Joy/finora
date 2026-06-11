@@ -34,7 +34,7 @@ const tabs: TransactionTab[] = [
 ];
 
 const NewTransactionDialog = () => {
-  const [showDialog, setShowDialog] = useState(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const [transactionType, setTransactionType] =
     useState<TransactionType>("income");
   return (

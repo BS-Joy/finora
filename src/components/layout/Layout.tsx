@@ -10,7 +10,7 @@ import Header from "./Header";
 import { useTransactionStore } from "@/store/TransactionStore";
 
 const Layout = ({ noProfile }: { noProfile: boolean }) => {
-  const { user, setUser, setUserProfile } = useAuthStore();
+  const { user, setUser, setUserProfile, setCurrentWallet } = useAuthStore();
   const { setCategories } = useTransactionStore();
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
@@ -44,6 +44,7 @@ const Layout = ({ noProfile }: { noProfile: boolean }) => {
         console.error(profileError);
       } else {
         setUserProfile(data);
+        setCurrentWallet(data?.current_wallet);
       }
 
       return data;

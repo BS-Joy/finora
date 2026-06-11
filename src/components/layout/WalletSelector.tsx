@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,41 +7,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
-type userSchema = {
-  id: number;
-  src: string;
-  fallback: string;
-  name: string;
-  mail: string;
-};
-
-const users: userSchema[] = [
-  {
-    id: 1,
-    src: "https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png",
-    fallback: "PG",
-    name: "Phillip George",
-    mail: "phillip12@gmail.com",
-  },
-  {
-    id: 2,
-    src: "https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-2.png",
-    fallback: "JD",
-    name: "Jaylon Donin",
-    mail: "jaylo-don@yahoo.com",
-  },
-  {
-    id: 3,
-    src: "https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-3.png",
-    fallback: "TC",
-    name: "Tiana Curtis",
-    mail: "Tiana_curtis@gmail.com",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useAuthStore } from "@/store/AuthStore";
 
 const WalletSelector = ({ customClass }: { customClass?: string }) => {
-  const [selectUser, setSelectUser] = useState<userSchema>(users[0]);
+  const { userProfile, setCurrentWallet } = useAuthStore();
+
+  const { data, error, isPending } = useQuery({
+    queryKey: ["wallets"],
+    queryFn: async () => {
+      const res = await supabase.from("wallets").select();
+
+      if (res?.error) {
+        console.log(res?.error);
+        throw new Error(res.error.message);
+      }
+      return res?.data;
+    },
+  });
+
+  if (isPending) {
+    return <p>loading...</p>;
+  }
+
+  if (error) {
+    return <p>Something went wrong...</p>;
+  }
+
+  const currentWallet = userProfile?.current_wallet;
 
   return (
     <DropdownMenu>
@@ -53,45 +45,45 @@ const WalletSelector = ({ customClass }: { customClass?: string }) => {
           customClass,
         )}
       >
-        <div className="flex items-center">
-          <Avatar>
-            <AvatarImage src={selectUser.src} alt={selectUser.name} />
-            <AvatarFallback className="text-xs">
-              {selectUser.fallback}
-            </AvatarFallback>
-          </Avatar>
+        <div className="flex gap-3">
+          <span className="bg-white rounded-full w-8 h-8">
+            {currentWallet?.icon}
+          </span>
           <div className="flex flex-col gap-1 text-start leading-none">
             <span className="max-w-[17ch] truncate text-sm leading-none font-semibold">
-              {selectUser.name}
+              {currentWallet?.name}
             </span>
-            {/* <span className="text-muted-foreground max-w-[20ch] truncate text-xs">
-            {selectUser.mail}
-          </span> */}
+            <span className="text-muted-foreground dark:text-white/70 max-w-[20ch] truncate text-xs">
+              Current Balance: {currentWallet?.current_balance}
+            </span>
           </div>
         </div>
         <ChevronsUpDownIcon color="#5f6e5e" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-66">
-        <DropdownMenuLabel>Task Assignment</DropdownMenuLabel>
-        {users.map((user) => (
-          <DropdownMenuItem key={user.id} onClick={() => setSelectUser(user)}>
+        <DropdownMenuLabel>Wallets</DropdownMenuLabel>
+        {data.map((w) => (
+          <DropdownMenuItem
+            key={w.id}
+            onClick={() => setCurrentWallet(w)}
+            className="border-b"
+          >
             <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarImage src={user.src} alt={user.name} />
-                <AvatarFallback className="text-xs">
-                  {user.fallback}
-                </AvatarFallback>
-              </Avatar>
+              <div className="bg-white rounded-full w-7 h-7 flex items-center justify-center ">
+                {w.icon}
+              </div>
               <div className="flex flex-col gap-1 text-start leading-none">
                 <span className="max-w-[17ch] truncate text-sm leading-none font-semibold">
-                  {user.name}
+                  {w.name}
                 </span>
-                <span className="text-muted-foreground max-w-[20ch] truncate text-xs">
-                  {user.mail}
+                <span className="text-muted-foreground dark:text-white/70 max-w-[20ch] truncate text-xs">
+                  Current Balance: {w.current_balance}
                 </span>
               </div>
             </div>
-            {selectUser.id === user.id && <CheckIcon className="ml-auto" />}
+            {currentWallet?.name === w?.name && (
+              <CheckIcon className="ml-auto" />
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

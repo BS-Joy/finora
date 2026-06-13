@@ -9,6 +9,8 @@ import {
 import { Badge } from "../ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { cn, formatDate } from "@/lib/utils";
+import Spinner from "../Spinner";
 
 const RecentTransactionsTable = () => {
   const { data, error, isPending } = useQuery({
@@ -16,7 +18,7 @@ const RecentTransactionsTable = () => {
     queryFn: async () => {
       const res = await supabase
         .from("transactions")
-        .select()
+        .select("*, category: category_id (*)")
         .limit(5)
         .order("created_at", { ascending: false });
 
@@ -30,11 +32,19 @@ const RecentTransactionsTable = () => {
   });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <Spinner size="10" />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Something went wrong...</div>;
+    return (
+      <p className="text-red-500">
+        Something went wrong. Please refresh the page or try again later.
+      </p>
+    );
   }
 
   return (
@@ -55,7 +65,7 @@ const RecentTransactionsTable = () => {
             <TableRow key={index}>
               <TableCell className="flex items-center gap-2">
                 <span className="bg-green-600/20 dark:bg-green-600/40 p-2 rounded flex items-center justify-center shrink">
-                  💼{" "}
+                  {t.category.icon}
                 </span>
                 <div className="">
                   <h6 className="font-bold dark:text-cream">{t.title}</h6>
@@ -71,17 +81,22 @@ const RecentTransactionsTable = () => {
               </TableCell>
               <TableCell>
                 <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
-                  Salary
+                  {t?.category?.name}
                 </Badge>
               </TableCell>
-              <TableCell>15 April, 2026</TableCell>
+              <TableCell>{formatDate(t.created_at)}</TableCell>
               <TableCell>
                 <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
-                  Income
+                  {t.type === "expense" ? "Expense" : "Income"}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right font-bold text-green-500">
-                + $250.00
+              <TableCell
+                className={cn(
+                  "text-right font-bold",
+                  t.type === "expense" ? "text-red-500" : "text-green-500",
+                )}
+              >
+                {t.type === "expense" ? "-" : "+"} ${t.amount}
               </TableCell>
             </TableRow>
           ))

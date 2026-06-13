@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/store/AuthStore";
+import Spinner from "../Spinner";
 
 const WalletSelector = ({ customClass }: { customClass?: string }) => {
   const { userProfile, setCurrentWallet } = useAuthStore();
@@ -28,11 +29,19 @@ const WalletSelector = ({ customClass }: { customClass?: string }) => {
   });
 
   if (isPending) {
-    return <p>loading...</p>;
+    return (
+      <div className="flex justify-center items-center">
+        <Spinner size="8" />
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Something went wrong...</p>;
+    return (
+      <p className="text-red-500 text-sm">
+        Couldn't load wallets. Something went wrong!
+      </p>
+    );
   }
 
   const currentWallet = userProfile?.current_wallet;

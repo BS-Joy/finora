@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 import Spinner from "../Spinner";
 import { toast } from "sonner";
 import NewCategoryDialog from "./NewCategoryDialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AddTransactionFormPropsTypes {
   transactionType: TransactionType;
@@ -36,8 +37,10 @@ const AddTransactionForm = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [showNewCategoryDialog, setShowNewCategoryDialog] =
     useState<boolean>(false);
+
   const { userProfile, user } = useAuthStore();
   const { categories } = useTransactionStore();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -82,6 +85,7 @@ const AddTransactionForm = ({
     if (res?.data) {
       setLoading(false);
       toast.success("Transaction added successfully.");
+      queryClient.invalidateQueries({ queryKey: ["recentTransactions"] });
       // console.log(res?.data);
       closeDialog();
     }

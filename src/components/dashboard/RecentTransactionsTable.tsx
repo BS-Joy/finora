@@ -50,15 +50,18 @@ const RecentTransactionsTable = () => {
   return (
     <Table>
       {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
+      {data?.length > 0 && (
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+      )}
+
       <TableBody>
         {data?.length > 0 ? (
           data?.map((t, index) => (
@@ -101,7 +104,11 @@ const RecentTransactionsTable = () => {
             </TableRow>
           ))
         ) : (
-          <div>No transaction yet</div>
+          <TableRow>
+            <TableCell colSpan={5} className="h-24 text-center">
+              No results.
+            </TableCell>
+          </TableRow>
         )}
       </TableBody>
     </Table>

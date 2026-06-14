@@ -38,9 +38,11 @@ const AddTransactionForm = ({
   const [showNewCategoryDialog, setShowNewCategoryDialog] =
     useState<boolean>(false);
 
-  const { userProfile, user } = useAuthStore();
+  const { userProfile, user, currentWallet, setCurrentWallet } = useAuthStore();
   const { categories } = useTransactionStore();
   const queryClient = useQueryClient();
+
+  // console.log(currentWallet?.current_balance);
 
   const {
     register,
@@ -62,6 +64,11 @@ const AddTransactionForm = ({
 
   const handleSubmitForm: SubmitHandler<FormInputTypes> = async (data) => {
     setLoading(true);
+
+    // let currentBalance;
+    // let totalIncome;
+    // let totalExpense;
+
     const formData = {
       ...data,
       amount: Number(data.amount),
@@ -83,7 +90,36 @@ const AddTransactionForm = ({
     }
 
     if (res?.data) {
-      setLoading(false);
+      console.log(currentWallet);
+      if (!currentWallet) {
+        toast.error("No wallet selected");
+        return;
+      }
+      const walletUpdate =
+        transactionType === "income"
+          ? {
+              current_balance: currentWallet.current_balance + formData.amount,
+              total_income: currentWallet.total_income + formData.amount,
+            }
+          : {
+              current_balance: currentWallet.current_balance - formData.amount,
+              total_expense: currentWallet.total_expense + formData.amount,
+            };
+
+      setCurrentWallet({ ...currentWallet, ...walletUpdate });
+
+      const result = await supabase
+        .from("wallets")
+        .update(walletUpdate)
+        .eq("id", currentWallet?.id)
+        .select()
+        .single();
+
+      if (result.error) {
+        toast.error("Failed to update wallet balance!");
+        console.log(result.error);
+      }
+      console.log("updated wallet: ", result?.data);
       toast.success("Transaction added successfully.");
       queryClient.invalidateQueries({ queryKey: ["recentTransactions"] });
       // console.log(res?.data);

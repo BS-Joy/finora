@@ -17,8 +17,14 @@ const Dashboard = () => {
   const profileExist: boolean = useLoaderData();
   const [showDialog, setShowDialog] = useState<boolean>(!profileExist);
   const { userProfile, user } = useAuthStore();
+  const currentWallet = useAuthStore((state) => state.currentWallet);
 
   const isMobile = useMediaQuery("(min-width: 500px)");
+  const savingsPercentage = currentWallet
+    ? ((currentWallet.total_income - currentWallet.total_expense) /
+        currentWallet.total_income) *
+      100
+    : 0;
 
   const currencySymbol =
     currencies.find((c) => c.code === userProfile?.currency)?.symbol || "$";
@@ -29,7 +35,7 @@ const Dashboard = () => {
         <div className="hidden md:flex flex-col md:flex-row gap-6">
           <StatsCard
             title="Current Balance"
-            value={`${currencySymbol}2,635`}
+            value={`${currencySymbol} ${currentWallet?.current_balance}`}
             icon={DollarSign}
             bgColor="bg-primary dark:bg-cream"
             textColor="text-cream dark:text-primary"
@@ -39,7 +45,7 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Total Income"
-            value={`${currencySymbol}1,200`}
+            value={`${currencySymbol} ${currentWallet?.total_income}`}
             icon={TrendingUp}
             textColor="text-primary/80"
             bgColor="bg-lime"
@@ -49,7 +55,7 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Total Expenses"
-            value={`${currencySymbol}1,435`}
+            value={`${currencySymbol} ${currentWallet?.total_expense}`}
             icon={TrendingDown}
             textColor="destructive"
             bgColor="bg-red-400/80 dark:bg-red-400"
@@ -59,7 +65,7 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Savings"
-            value="12%"
+            value={`${savingsPercentage.toFixed(2)}%`}
             icon={Vault}
             delay={0.8}
             bgColor="bg-blue-400/80"
@@ -76,7 +82,11 @@ const Dashboard = () => {
         </div>
 
         {/* mobile stat card */}
-        <MobileStatCard />
+        <MobileStatCard
+          balance={currentWallet?.current_balance ?? 0}
+          income={currentWallet?.total_income ?? 0}
+          expense={currentWallet?.total_expense ?? 0}
+        />
 
         {/* income vs expenses chart */}
         {isMobile && (

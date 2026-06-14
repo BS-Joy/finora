@@ -3,13 +3,13 @@ import { currencies } from "@/utils";
 import { motion } from "framer-motion";
 
 const MobileStatCard = ({
-  balance = 42500,
-  income = 85000,
-  expenses = 42500,
+  balance = 0,
+  income = 0,
+  expense = 0,
 }: {
-  balance?: number;
-  income?: number;
-  expenses?: number;
+  balance: number;
+  income: number;
+  expense: number;
 }) => {
   const { userProfile } = useAuthStore();
   const currencySymbol =
@@ -72,7 +72,7 @@ const MobileStatCard = ({
             Expenses
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
-            {currencySymbol} {expenses.toLocaleString()}
+            {currencySymbol} {expense.toLocaleString()}
           </span>
         </div>
       </div>

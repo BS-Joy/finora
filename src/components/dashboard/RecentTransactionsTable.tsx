@@ -11,9 +11,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { cn, formatDate } from "@/lib/utils";
 import Spinner from "../Spinner";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import RecentTransactionsCard from "./RecentTransactionsCard";
+import type { TransactionWithCategory } from "@/types";
 
-const RecentTransactionsTable = () => {
-  const { data, error, isPending } = useQuery({
+const RecentTransactionsTable = ({
+  currencySymbol,
+}: {
+  currencySymbol: string;
+}) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { data, error, isPending } = useQuery<TransactionWithCategory[]>({
     queryKey: ["recentTransactions"],
     queryFn: async () => {
       const res = await supabase
@@ -44,6 +52,25 @@ const RecentTransactionsTable = () => {
       <p className="text-red-500">
         Something went wrong. Please refresh the page or try again later.
       </p>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <div className="mt-4">
+        {data?.length > 0 ? (
+          data?.map((t) => (
+            <RecentTransactionsCard
+              transaction={t}
+              currencySymbol={currencySymbol}
+            />
+          ))
+        ) : (
+          <p className="text-center text-muted-foreground">
+            No recent transactions.
+          </p>
+        )}
+      </div>
     );
   }
 
@@ -87,7 +114,9 @@ const RecentTransactionsTable = () => {
                   {t?.category?.name}
                 </Badge>
               </TableCell>
-              <TableCell>{formatDate(t.created_at)}</TableCell>
+              <TableCell>
+                {formatDate(t.created_at ?? "Date Unknown")}
+              </TableCell>
               <TableCell>
                 <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
                   {t.type === "expense" ? "Expense" : "Income"}
@@ -99,7 +128,8 @@ const RecentTransactionsTable = () => {
                   t.type === "expense" ? "text-red-500" : "text-green-500",
                 )}
               >
-                {t.type === "expense" ? "-" : "+"} ${t.amount}
+                {t.type === "expense" ? "-" : "+"} {currencySymbol}
+                {t.amount}
               </TableCell>
             </TableRow>
           ))

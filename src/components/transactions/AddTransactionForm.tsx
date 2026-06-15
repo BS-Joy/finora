@@ -65,10 +65,6 @@ const AddTransactionForm = ({
   const handleSubmitForm: SubmitHandler<FormInputTypes> = async (data) => {
     setLoading(true);
 
-    // let currentBalance;
-    // let totalIncome;
-    // let totalExpense;
-
     const formData = {
       ...data,
       amount: Number(data.amount),
@@ -87,10 +83,10 @@ const AddTransactionForm = ({
       setLoading(false);
       toast.error("Something went wrong during insert transaction!");
       console.log(res.error);
+      return;
     }
 
     if (res?.data) {
-      console.log(currentWallet);
       if (!currentWallet) {
         toast.error("No wallet selected");
         return;
@@ -106,8 +102,6 @@ const AddTransactionForm = ({
               total_expense: currentWallet.total_expense + formData.amount,
             };
 
-      setCurrentWallet({ ...currentWallet, ...walletUpdate });
-
       const result = await supabase
         .from("wallets")
         .update(walletUpdate)
@@ -116,13 +110,17 @@ const AddTransactionForm = ({
         .single();
 
       if (result.error) {
+        await supabase.from("transactions").delete().eq("id", res?.data?.id);
         toast.error("Failed to update wallet balance!");
         console.log(result.error);
+        return;
       }
-      console.log("updated wallet: ", result?.data);
+
+      setCurrentWallet({ ...currentWallet, ...walletUpdate });
       toast.success("Transaction added successfully.");
-      queryClient.invalidateQueries({ queryKey: ["recentTransactions"] });
-      // console.log(res?.data);
+      queryClient.invalidateQueries({
+        queryKey: ["recentTransactions", "wallets"],
+      });
       closeDialog();
     }
   };

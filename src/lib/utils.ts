@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatDate = (date: string) => {
+  if (!date) return "Unknown date";
   const formattedDate = format(parseISO(date), "d MMMM, yyyy");
 
   return formattedDate;

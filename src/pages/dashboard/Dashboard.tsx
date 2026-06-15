@@ -97,11 +97,11 @@ const Dashboard = () => {
         )}
 
         {/* recent transactions table */}
-        <div className="mt-6 bg-card border rounded-lg p-8">
+        <div className="mt-6 md:bg-card md:border rounded-lg md:p-8">
           <h2 className="text-xl font-semibold font-jakarta mb-4 dark:text-gray-300 text-gray-600">
             Recent Transactions
           </h2>
-          <RecentTransactionsTable />
+          <RecentTransactionsTable currencySymbol={currencySymbol} />
         </div>
       </div>
       <Dialog open={showDialog}>

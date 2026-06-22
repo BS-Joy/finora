@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/AuthStore";
 import { ThemeToggle } from "../theme-toggle";
 import Logo from "../Logo";
 import WalletSelector from "./WalletSelector";
-import NewTransactionDialog from "../dashboard/NewTransactionDialog";
+import NewTransactionDialog from "@/features/dashboard/NewTransactionDialog";
 import { AvatarDropDown } from "./AvatarDropDown";
 
 const Header = () => {

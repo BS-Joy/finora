@@ -1,18 +1,18 @@
 import type { TransactionType } from "@/types";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { Field, FieldGroup, FieldSet } from "../ui/field";
-import FormField from "../shared/FormField";
-import { Input } from "../ui/input";
+import { Field, FieldGroup, FieldSet } from "@/components/ui/field";
+import FormField from "@/components/FormField";
+import { Input } from "@/components/ui/input";
 import CategoryColorPicker from "./CategoryColorPicker";
 import { useAuthStore } from "@/store/AuthStore";
 import { categoryIcons } from "@/utils";
 import { ArrowDown } from "lucide-react";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from "react";
 import useDebounce from "@/hooks/useDebounce";
 import { supabase } from "@/lib/supabase";
-import Spinner from "../Spinner";
+import Spinner from "@/components/Spinner";
 import { toast } from "sonner";
 import {
   Select,
@@ -21,7 +21,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import CategoryIconSelector from "./CategoryIconSelector";
 import { useQueryClient } from "@tanstack/react-query";
 

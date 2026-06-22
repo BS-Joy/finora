@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import LoginPage from "./pages/auth/LoginPage";
-import Dashboard from "./pages/dashboard/Dashboard";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import IncomePage from "./pages/income/IncomePage";
 import Layout from "./components/layout/Layout";
@@ -29,7 +29,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Dashboard />,
+          element: <DashboardPage />,
           loader: async () => {
             const {
               data: { user },

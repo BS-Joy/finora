@@ -7,19 +7,80 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-
-const chartData = [
-  { month: "Nov", income: 4000, expense: 2500 },
-  { month: "Dec", income: 4500, expense: 2600 },
-  { month: "Jan", income: 4700, expense: 3000 },
-  { month: "Feb", income: 5000, expense: 3100 },
-  { month: "Mar", income: 5200, expense: 3400 },
-  { month: "Apr", income: 5500, expense: 3600 },
-  { month: "May", income: 5500, expense: 7000 },
-  { month: "Jun", income: 5500, expense: 8000 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import Spinner from "../../../components/Spinner";
+import type { TransactionWithCategory } from "@/types";
 
 const IncomeExpenseChart = ({ isDark = false }) => {
+  const {
+    data: chartData,
+    isPending,
+    error,
+  } = useQuery<{ month: string; income: number; expense: number }[]>({
+    queryKey: ["incomeExpenseData"],
+    queryFn: async () => {
+      const res = await supabase
+        .from("transactions")
+        .select("*, category: category_id (*)");
+
+      if (res?.error) {
+        console.log(res.error);
+        throw new Error(res.error.message);
+      }
+
+      const transactions = res.data as TransactionWithCategory[];
+      const monthMap: {
+        [key: string]: { income: number; expense: number };
+      } = {};
+
+      transactions.forEach((t) => {
+        const date = new Date(t.created_at || "");
+        const monthYear = date.toLocaleString("en-US", {
+          month: "short",
+          year: "2-digit",
+        });
+
+        if (!monthMap[monthYear]) {
+          monthMap[monthYear] = { income: 0, expense: 0 };
+        }
+
+        if (t.type === "income") {
+          monthMap[monthYear].income += t.amount;
+        } else {
+          monthMap[monthYear].expense += t.amount;
+        }
+      });
+
+      return Object.entries(monthMap)
+        .map(([month, values]) => ({
+          month,
+          ...values,
+        }))
+        .sort((a, b) => {
+          const dateA = new Date(a.month);
+          const dateB = new Date(b.month);
+          return dateA.getTime() - dateB.getTime();
+        });
+    },
+  });
+
+  if (isPending) {
+    return (
+      <div className="w-full bg-card border p-8 rounded-lg md:max-h-150 flex justify-center items-center">
+        <Spinner size="10" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full bg-card border p-8 rounded-lg md:max-h-150 flex justify-center items-center">
+        <p className="text-red-500">Failed to load chart data</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-card border p-8 rounded-lg md:max-h-150">
       <div className="mb-8 dark:text-gray-300 text-gray-600 font-jakarta">

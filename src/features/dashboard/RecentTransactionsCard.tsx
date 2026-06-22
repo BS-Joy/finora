@@ -1,5 +1,5 @@
 import type { TransactionWithCategory } from "@/types";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
 
 interface RecentTransactionsCardProps {

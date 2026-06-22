@@ -1,5 +1,10 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { Field, FieldGroup, FieldLegend, FieldSet } from "../ui/field";
+import {
+  Field,
+  FieldGroup,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -8,13 +13,13 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import { currencies, walletIcons } from "@/utils";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import Spinner from "../Spinner";
-import FormField from "../shared/FormField";
+import Spinner from "@/components/Spinner";
+import FormField from "@/components/FormField";
 import { useAuthStore } from "@/store/AuthStore";
 import { supabase } from "@/lib/supabase";
 

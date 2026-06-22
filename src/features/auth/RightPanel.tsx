@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-import Spinner from "../Spinner";
+import Spinner from "@/components/Spinner";
 import { supabase } from "@/lib/supabase";
 
 const RightPanel = () => {

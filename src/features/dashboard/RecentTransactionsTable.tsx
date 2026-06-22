@@ -6,11 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { cn, formatDate } from "@/lib/utils";
-import Spinner from "../Spinner";
+import Spinner from "@/components/Spinner";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import RecentTransactionsCard from "./RecentTransactionsCard";
 import type { TransactionWithCategory } from "@/types";

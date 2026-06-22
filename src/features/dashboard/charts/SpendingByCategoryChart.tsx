@@ -1,15 +1,80 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-const data = [
-  { name: "Food", value: 34, color: "#FF6B6B" },
-  { name: "Rent", value: 23, color: "#A78BFA" },
-  { name: "Transport", value: 15, color: "#FBBF24" },
-  { name: "Others", value: 28, color: "#2DD4BF" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import Spinner from "../../../components/Spinner";
+import type { TransactionWithCategory } from "@/types";
 
 // const RADIAN = Math.PI / 180;
 
 export default function SpendingChart() {
+  const {
+    data: chartData,
+    isPending,
+    error,
+  } = useQuery<
+    { name: string; value: number; color: string; amount: number }[]
+  >({
+    queryKey: ["spendingByCategory"],
+    queryFn: async () => {
+      const res = await supabase
+        .from("transactions")
+        .select("*, category: category_id (*)")
+        .eq("type", "expense");
+
+      if (res?.error) {
+        console.log(res.error);
+        throw new Error(res.error.message);
+      }
+
+      const transactions = res.data as TransactionWithCategory[];
+      const categoryMap: {
+        [key: string]: { amount: number; color: string };
+      } = {};
+
+      transactions.forEach((t) => {
+        const categoryName = t.category.name;
+        if (!categoryMap[categoryName]) {
+          categoryMap[categoryName] = { amount: 0, color: t.category.color };
+        }
+        categoryMap[categoryName].amount += t.amount;
+      });
+
+      const totalExpense = Object.values(categoryMap).reduce(
+        (sum, cat) => sum + cat.amount,
+        0,
+      );
+
+      return Object.entries(categoryMap)
+        .map(([name, data]) => ({
+          name,
+          amount: data.amount,
+          value: Math.round((data.amount / totalExpense) * 100),
+          color: data.color,
+        }))
+        .sort((a, b) => b.amount - a.amount);
+    },
+  });
+
+  if (isPending) {
+    return (
+      <div className="rounded-lg p-8 bg-card w-full border flex justify-center items-center">
+        <Spinner size="10" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-lg p-8 bg-card w-full border flex justify-center items-center">
+        <p className="text-red-500">Failed to load chart data</p>
+      </div>
+    );
+  }
+
+  const totalExpense =
+    chartData?.reduce((sum, cat) => sum + cat.amount, 0) || 0;
+  const formattedTotal = (totalExpense / 1000).toFixed(1);
+
   return (
     <div className="rounded-lg p-8 bg-card w-full border">
       {/* Header */}
@@ -31,7 +96,7 @@ export default function SpendingChart() {
           >
             <PieChart>
               <Pie
-                data={data}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 innerRadius={"52%"}
@@ -42,7 +107,7 @@ export default function SpendingChart() {
                 endAngle={-270}
                 strokeWidth={0}
               >
-                {data.map((entry, index) => (
+                {chartData?.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
@@ -51,14 +116,16 @@ export default function SpendingChart() {
 
           {/* Center Label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="font-bold text-lg leading-tight">৳42.5k</span>
+            <span className="font-bold text-lg leading-tight">
+              ৳{formattedTotal}k
+            </span>
             <span className="text-xs mt-0.5">Total</span>
           </div>
         </div>
 
         {/* Legend */}
         <div className="flex flex-col gap-3">
-          {data.map((item) => (
+          {chartData?.map((item) => (
             <div key={item.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span

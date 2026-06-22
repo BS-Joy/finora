@@ -1,5 +1,5 @@
-import LeftPanel from "@/components/auth/LeftPanel";
-import RightPanel from "@/components/auth/RightPanel";
+import LeftPanel from "@/features/auth/LeftPanel";
+import RightPanel from "@/features/auth/RightPanel";
 import { useAuthStore } from "@/store/AuthStore";
 import { useEffect } from "react";
 import { Navigate } from "react-router";

@@ -1,10 +1,10 @@
-import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
-import SpendingByCategoryChart from "@/components/charts/SpendingByCategoryChart";
-import MobileStatCard from "@/components/dashboard/MobileStatCard";
-import RecentTransactionsTable from "@/components/dashboard/RecentTransactionsTable";
+import IncomeExpenseChart from "@/features/dashboard/charts/IncomeExpenseChart";
+import SpendingByCategoryChart from "@/features/dashboard/charts/SpendingByCategoryChart";
+import MobileStatCard from "@/features/dashboard/MobileStatCard";
+import RecentTransactionsTable from "@/features/dashboard/RecentTransactionsTable";
 import WalletSelector from "@/components/layout/WalletSelector";
-import ProfileCreationForm from "@/components/profile/ProfileCreationForm";
-import StatsCard from "@/components/shared/StatsCard";
+import ProfileCreationForm from "@/features/profile/ProfileCreationForm";
+import StatsCard from "@/components/StatsCard";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuthStore } from "@/store/AuthStore";

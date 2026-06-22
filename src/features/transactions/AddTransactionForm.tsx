@@ -1,21 +1,21 @@
 import type { TransactionType } from "@/types";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { Field, FieldGroup, FieldSet } from "../ui/field";
-import FormField from "../shared/FormField";
-import { Input } from "../ui/input";
+import { Field, FieldGroup, FieldSet } from "@/components/ui/field";
+import FormField from "@/components/FormField";
+import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/AuthStore";
 import { currencies } from "@/utils";
 import TransactionCategorySelector from "./TransactionCategorySelector";
 import { ArrowDown } from "lucide-react";
 import { useTransactionStore } from "@/store/TransactionStore";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
-import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import Spinner from "../Spinner";
+import Spinner from "@/components/Spinner";
 import { toast } from "sonner";
-import NewCategoryDialog from "./NewCategoryDialog";
+import NewCategoryDialog from "../category/NewCategoryDialog";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface AddTransactionFormPropsTypes {

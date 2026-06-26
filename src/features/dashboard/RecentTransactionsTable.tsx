@@ -79,7 +79,7 @@ const RecentTransactionsTable = ({
       {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
       {data?.length > 0 && (
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-muted/50">
             <TableHead>Title</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Date</TableHead>
@@ -94,7 +94,10 @@ const RecentTransactionsTable = ({
           data?.map((t, index) => (
             <TableRow key={index}>
               <TableCell className="flex items-center gap-2">
-                <span className="bg-green-600/20 dark:bg-green-600/40 p-2 rounded flex items-center justify-center shrink">
+                <span
+                  className="p-2 rounded flex items-center justify-center shrink"
+                  style={{ backgroundColor: t.category.color }}
+                >
                   {t.category.icon}
                 </span>
                 <div className="">
@@ -110,7 +113,12 @@ const RecentTransactionsTable = ({
                 </div>
               </TableCell>
               <TableCell>
-                <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
+                <Badge
+                  style={{
+                    color: t.category.color,
+                    backgroundColor: `${t.category.color}30`,
+                  }}
+                >
                   {t?.category?.name}
                 </Badge>
               </TableCell>
@@ -118,7 +126,14 @@ const RecentTransactionsTable = ({
                 {formatDate(t.created_at ?? "Date Unknown")}
               </TableCell>
               <TableCell>
-                <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
+                <Badge
+                  className={cn(
+                    "",
+                    t.type === "expense"
+                      ? "text-red-500 bg-red-600/10 dark:bg-red-600/20"
+                      : "text-green-500 bg-green-600/10 dark:bg-green-600/20",
+                  )}
+                >
                   {t.type === "expense" ? "Expense" : "Income"}
                 </Badge>
               </TableCell>

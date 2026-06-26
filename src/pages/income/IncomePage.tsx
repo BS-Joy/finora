@@ -1,6 +1,6 @@
-import IncomeSummary from "../../features/income/IncomeSummary";
-import IncomeFilters from "../../features/income/IncomeFilters";
-import IncomeTable from "../../features/income/IncomeTable";
+import IncomeSummary from "@/features/income/IncomeSummary";
+import IncomeFilters from "@/features/income/IncomeFilters";
+import IncomeTable from "@/features/income/IncomeTable";
 
 const IncomePage = () => {
   return (

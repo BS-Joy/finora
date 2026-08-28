@@ -1,6 +1,6 @@
 import IncomeExpenseChart from "@/features/dashboard/charts/IncomeExpenseChart";
 import SpendingByCategoryChart from "@/features/dashboard/charts/SpendingByCategoryChart";
-import MobileStatCard from "@/features/dashboard/MobileStatCard";
+import MobileStatCard from "@/components/MobileStatCard";
 import RecentTransactionsTable from "@/features/dashboard/RecentTransactionsTable";
 import WalletSelector from "@/components/layout/WalletSelector";
 import ProfileCreationForm from "@/features/profile/ProfileCreationForm";

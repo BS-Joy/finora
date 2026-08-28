@@ -1,5 +1,5 @@
 import type { TransactionWithCategory } from "@/types";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
 
 interface RecentTransactionsCardProps {
@@ -12,7 +12,7 @@ const RecentTransactionsCard = ({
   currencySymbol,
 }: RecentTransactionsCardProps) => {
   return (
-    <div className="bg-card border rounded-lg p-4 mb-4 last:mb-0">
+    <div className="bg-card border rounded-sm p-3 py-2 mb-4 last:mb-0">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="bg-green-600/20 dark:bg-green-600/40 p-1 rounded flex items-center justify-center shrink">
@@ -21,9 +21,16 @@ const RecentTransactionsCard = ({
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2">
               <h6 className="font-bold dark:text-cream">{transaction.title}</h6>
-              <Badge className="bg-green-600/10 dark:bg-green-600/20 text-green-600">
-                {transaction?.category?.name}
-              </Badge>
+              {/* <Badge
+                className={cn(
+                  "text-xs",
+                  transaction.type === "expense"
+                    ? "text-red-500 bg-red-600/10 dark:bg-red-600/20"
+                    : "text-green-500 bg-green-600/10 dark:bg-green-600/20",
+                )}
+              >
+                {transaction.type === "expense" ? "Expense" : "Income"}
+              </Badge> */}
             </div>
             <p className="text-[12px] text-muted-foreground font-jakarta font-medium">
               {transaction.note || "No notes"}

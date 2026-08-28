@@ -6,10 +6,18 @@ const MobileStatCard = ({
   balance = 0,
   income = 0,
   expense = 0,
+  balanceTitle = "Current Balance",
+  incomeTitle = "Income",
+  expenseTitle = "Expense",
+  background = `linear-gradient(135deg, oklch(0.28 0.07 145) 0%, oklch(0.42 0.13 150) 55%, oklch(0.58 0.17 158) 100%)`,
 }: {
   balance: number;
   income: number;
   expense: number;
+  balanceTitle?: string;
+  incomeTitle?: string;
+  expenseTitle?: string;
+  background?: string;
 }) => {
   const { userProfile } = useAuthStore();
   const currencySymbol =
@@ -22,8 +30,7 @@ const MobileStatCard = ({
       transition={{ duration: 0.35, ease: "easeIn", delay: 0.1 }}
       className="w-full rounded-[18px] p-5 flex md:hidden flex-col gap-4"
       style={{
-        background:
-          "linear-gradient(135deg, oklch(0.28 0.07 145) 0%, oklch(0.42 0.13 150) 55%, oklch(0.58 0.17 158) 100%)",
+        background,
       }}
     >
       {/* top section */}
@@ -32,7 +39,7 @@ const MobileStatCard = ({
           className="font-jakarta text-[11px] font-semibold tracking-widest uppercase"
           style={{ color: "oklch(0.82 0.04 155)" }}
         >
-          Current Balance
+          {balanceTitle}
         </p>
         <p className="font-jakarta text-[36px] font-extrabold tracking-tight leading-[1.1] text-cream">
           {currencySymbol} {balance.toLocaleString()}
@@ -53,7 +60,7 @@ const MobileStatCard = ({
             className="font-jakarta text-[11px] font-medium"
             style={{ color: "oklch(0.78 0.05 155)" }}
           >
-            Income
+            {incomeTitle}
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
             {currencySymbol} {income.toLocaleString()}
@@ -69,7 +76,7 @@ const MobileStatCard = ({
             className="font-jakarta text-[11px] font-medium"
             style={{ color: "oklch(0.78 0.05 155)" }}
           >
-            Expenses
+            {expenseTitle}
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
             {currencySymbol} {expense.toLocaleString()}

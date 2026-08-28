@@ -1,9 +1,12 @@
 import { ArrowUpRight, ListOrdered, Calculator, Calendar } from "lucide-react";
 import { useAuthStore } from "@/store/AuthStore";
 import StatsCard from "@/components/StatsCard";
+import MobileStatCard from "@/components/MobileStatCard";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const IncomeSummary = () => {
   const { userProfile } = useAuthStore();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Mock data for design purposes as per instructions
   const summary = {
@@ -53,20 +56,35 @@ const IncomeSummary = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map((card) => (
-        <StatsCard
-          key={card.title}
-          title={card.title}
-          value={card.value}
-          icon={card.icon}
-          bgColor={card.bgColor}
-          iconBg={card.iconBg}
-          iconColor={card.iconColor}
-          delay={card.delay}
-        />
-      ))}
-    </div>
+    <>
+      {isMobile ? (
+        <div className="pt-6">
+          <MobileStatCard
+            balance={summary.thisMonth}
+            income={summary.thisMonth}
+            expense={summary.lastMonth}
+            balanceTitle="This Month"
+            incomeTitle="This Month"
+            expenseTitle="Last Month"
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {cards.map((card) => (
+            <StatsCard
+              key={card.title}
+              title={card.title}
+              value={card.value}
+              icon={card.icon}
+              bgColor={card.bgColor}
+              iconBg={card.iconBg}
+              iconColor={card.iconColor}
+              delay={card.delay}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 

@@ -161,6 +161,7 @@ const AddTransactionForm = ({
                     type="number"
                     className="border-none shadow-none md:text-lg font-bold"
                     placeholder="0.00"
+                    required
                     {...register("amount")}
                   />
                 </div>

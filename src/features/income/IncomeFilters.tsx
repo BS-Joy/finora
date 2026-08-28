@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,10 +8,100 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Plus, Search, CalendarDays, ListFilter } from "lucide-react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const IncomeFilters = () => {
   const categories = ["Salary", "Freelance", "Business", "Investment", "Gift"];
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [showSearch, setShowSearch] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  if (isMobile) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <CalendarDays className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+              <DropdownMenuItem>All Time</DropdownMenuItem>
+              <DropdownMenuItem>This Month</DropdownMenuItem>
+              <DropdownMenuItem>Last Month</DropdownMenuItem>
+              <DropdownMenuItem>Custom</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <ListFilter className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+              <DropdownMenuItem>Sort: Latest</DropdownMenuItem>
+              <DropdownMenuItem>Sort: Oldest</DropdownMenuItem>
+              <DropdownMenuItem>Amount: High to Low</DropdownMenuItem>
+              <DropdownMenuItem>Amount: Low to High</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowSearch((prev) => !prev)}
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+
+          <Button className="bg-primary hover:bg-primary/90">
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Horizontal scrollable category chips - Mobile */}
+        <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-hide">
+          <Button
+            variant={
+              selectedCategory === "All Categories" ? "default" : "outline"
+            }
+            size="sm"
+            className="rounded-full whitespace-nowrap shrink-0"
+            onClick={() => setSelectedCategory("All Categories")}
+          >
+            All Categories
+          </Button>
+          {categories.map((cat) => (
+            <Button
+              key={cat}
+              variant={selectedCategory === cat ? "default" : "outline"}
+              size="sm"
+              className="rounded-full whitespace-nowrap shrink-0"
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+
+        {showSearch && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search income..." className="pl-9" />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -30,13 +121,13 @@ const IncomeFilters = () => {
           </Button>
         </div>
 
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-50">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search income..." className="pl-9" />
         </div>
 
         <Select defaultValue="latest">
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-37.5">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -53,11 +144,20 @@ const IncomeFilters = () => {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" className="rounded-full bg-primary/10 border-primary/20 text-primary">
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-full bg-primary/10 border-primary/20 text-primary"
+        >
           All Categories
         </Button>
         {categories.map((cat) => (
-          <Button key={cat} variant="outline" size="sm" className="rounded-full">
+          <Button
+            key={cat}
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+          >
             {cat}
           </Button>
         ))}

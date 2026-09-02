@@ -110,16 +110,34 @@ const AddTransactionForm = ({
         .single();
 
       if (result.error) {
-        await supabase.from("transactions").delete().eq("id", res?.data?.id);
-        toast.error("Failed to update wallet balance!");
-        console.log(result.error);
+        setLoading(false);
+        const { error: deleteError } = await supabase
+          .from("transactions")
+          .delete()
+          .eq("id", res?.data?.id);
+
+        if (deleteError) {
+          toast.error(
+            "Failed to update wallet balance and rollback transaction!",
+          );
+          console.log(result.error, deleteError);
+        } else {
+          toast.error("Failed to update wallet balance!");
+          console.log(result.error);
+        }
         return;
       }
 
       setCurrentWallet({ ...currentWallet, ...walletUpdate });
       toast.success("Transaction added successfully.");
       queryClient.invalidateQueries({
-        queryKey: ["recentTransactions", "wallets"],
+        queryKey: ["recentTransactions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["wallets"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["incomeTransactions"],
       });
       closeDialog();
     }

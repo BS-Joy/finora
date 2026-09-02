@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, Search, CalendarDays, ListFilter } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { cn } from "@/lib/utils";
 
 const IncomeFilters = () => {
   const categories = ["Salary", "Freelance", "Business", "Investment", "Gift"];
@@ -69,13 +70,16 @@ const IncomeFilters = () => {
         </div>
 
         {/* Horizontal scrollable category chips - Mobile */}
-        <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto pt-2 px-1 scrollbar-hide">
           <Button
             variant={
               selectedCategory === "All Categories" ? "default" : "outline"
             }
             size="sm"
-            className="rounded-full whitespace-nowrap shrink-0"
+            className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+              "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
+                selectedCategory === "All Categories",
+            })}
             onClick={() => setSelectedCategory("All Categories")}
           >
             All Categories
@@ -85,8 +89,14 @@ const IncomeFilters = () => {
               key={cat}
               variant={selectedCategory === cat ? "default" : "outline"}
               size="sm"
-              className="rounded-full whitespace-nowrap shrink-0"
-              onClick={() => setSelectedCategory(cat)}
+              className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+                "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
+                  selectedCategory === cat,
+              })}
+              onClick={() => {
+                console.log(cat);
+                setSelectedCategory(cat);
+              }}
             >
               {cat}
             </Button>
@@ -145,18 +155,28 @@ const IncomeFilters = () => {
 
       <div className="flex flex-wrap gap-2">
         <Button
-          variant="outline"
+          variant={
+            selectedCategory === "All Categories" ? "default" : "outline"
+          }
           size="sm"
-          className="rounded-full bg-primary/10 border-primary/20 text-primary"
+          className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+            "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
+              selectedCategory === "All Categories",
+          })}
+          onClick={() => setSelectedCategory("All Categories")}
         >
           All Categories
         </Button>
         {categories.map((cat) => (
           <Button
             key={cat}
-            variant="outline"
+            className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+              "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
+                selectedCategory === cat,
+            })}
+            variant={selectedCategory === cat ? "default" : "outline"}
             size="sm"
-            className="rounded-full"
+            onClick={() => setSelectedCategory(cat)}
           >
             {cat}
           </Button>

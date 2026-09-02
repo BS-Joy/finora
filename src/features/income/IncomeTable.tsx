@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import Spinner from "@/components/Spinner";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -13,14 +13,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
+import { toast } from "sonner";
+import { useAuthStore } from "@/store/AuthStore";
 
 const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
+  const { currentWallet } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const queryClient = useQueryClient();
+
   const [currentPage, setCurrentPage] = useState(1);
+  // const [loading, setLoading] = useState(false);
 
   // Items per page: 5 for desktop, 4 for mobile
   const itemsPerPage = isMobile ? 4 : 5;
@@ -61,6 +68,29 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
     const start = (currentPage - 1) * itemsPerPage;
     return data.slice(start, start + itemsPerPage);
   }, [data, currentPage, itemsPerPage]);
+
+  const handleDelete = async (item: TransactionWithCategory) => {
+    toast.promise(
+      async () => {
+        const walletUpdate = {
+          current_balance: currentWallet?.current_balance - item.amount,
+          total_income: currentWallet?.total_income - item.amount,
+        };
+        const result = await supabase
+          .from("wallets")
+          .update(walletUpdate)
+          .eq("id", currentWallet?.id)
+          .select()
+          .single();
+        console.log(result);
+        await supabase.from("transactions").delete().eq("id", item.id);
+        queryClient.invalidateQueries({
+          queryKey: ["incomeTransactions", "recentTransactions", "wallets"],
+        });
+      },
+      { loading: "Deleting...", success: "Deleted", error: "Couldn't delete!" },
+    );
+  };
 
   if (isPending) {
     return (
@@ -153,6 +183,7 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
           {paginatedData.length > 0 ? (
             paginatedData.map((item, index) => (
               <TableRow key={index} className="hover:bg-muted/30">
+                {/* Transaction description */}
                 <TableCell className="flex items-center gap-3 py-3">
                   <span
                     className="p-2 rounded flex items-center justify-center text-xl shrink"
@@ -169,6 +200,8 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                     </p>
                   </div>
                 </TableCell>
+
+                {/* transaction category */}
                 <TableCell className="text-center">
                   <Badge
                     style={{
@@ -180,15 +213,22 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                     {item.category.name}
                   </Badge>
                 </TableCell>
+
+                {/* transaction date */}
                 <TableCell className="text-sm font-medium text-muted-foreground">
                   {formatDate(item?.created_at ?? "Date Unknown")}
                 </TableCell>
+
+                {/* transaction amount */}
                 <TableCell className="font-bold text-green-500">
                   + {currencySymbol}
                   {item.amount.toLocaleString()}
                 </TableCell>
+
+                {/* transaction actions */}
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
+                    {/* edit transaction */}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -196,13 +236,14 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+
+                    {/* delete transaction */}
+                    <ConfirmationDialog
+                      title="Are you sure?"
+                      description="This action cannot be undone. This will permanently delete this entry from the databse."
+                      action={() => handleDelete(item)}
+                      // loading={loading}
+                    ></ConfirmationDialog>
                   </div>
                 </TableCell>
               </TableRow>
@@ -216,6 +257,8 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
           )}
         </TableBody>
       </Table>
+
+      {/* pagination section */}
       {showPagination && (
         <div className="flex items-center justify-between pt-4 border-t flex-col md:flex-row gap-4">
           <p className="text-sm text-muted-foreground">

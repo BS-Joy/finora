@@ -6,17 +6,17 @@ const MobileStatCard = ({
   balance = 0,
   income = 0,
   expense = 0,
-  balanceTitle = "Current Balance",
-  incomeTitle = "Income",
-  expenseTitle = "Expense",
+  firstTitle = "Balance",
+  secondTitle = "Income",
+  thirdTitle = "Expense",
   background = `linear-gradient(135deg, oklch(0.28 0.07 145) 0%, oklch(0.42 0.13 150) 55%, oklch(0.58 0.17 158) 100%)`,
 }: {
   balance: number;
   income: number;
   expense: number;
-  balanceTitle?: string;
-  incomeTitle?: string;
-  expenseTitle?: string;
+  firstTitle?: string;
+  secondTitle?: string;
+  thirdTitle?: string;
   background?: string;
 }) => {
   const { userProfile } = useAuthStore();
@@ -39,7 +39,7 @@ const MobileStatCard = ({
           className="font-jakarta text-[11px] font-semibold tracking-widest uppercase"
           style={{ color: "oklch(0.82 0.04 155)" }}
         >
-          {balanceTitle}
+          {firstTitle}
         </p>
         <p className="font-jakarta text-[36px] font-extrabold tracking-tight leading-[1.1] text-cream">
           {currencySymbol} {balance.toLocaleString()}
@@ -60,7 +60,7 @@ const MobileStatCard = ({
             className="font-jakarta text-[11px] font-medium"
             style={{ color: "oklch(0.78 0.05 155)" }}
           >
-            {incomeTitle}
+            {secondTitle}
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
             {currencySymbol} {income.toLocaleString()}
@@ -76,7 +76,7 @@ const MobileStatCard = ({
             className="font-jakarta text-[11px] font-medium"
             style={{ color: "oklch(0.78 0.05 155)" }}
           >
-            {expenseTitle}
+            {thirdTitle}
           </span>
           <span className="font-jakarta text-[17px] font-bold tracking-tight text-cream">
             {currencySymbol} {expense.toLocaleString()}

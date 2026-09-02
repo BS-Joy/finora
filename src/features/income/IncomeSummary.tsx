@@ -63,9 +63,9 @@ const IncomeSummary = () => {
             balance={summary.thisMonth}
             income={summary.thisMonth}
             expense={summary.lastMonth}
-            balanceTitle="This Month"
-            incomeTitle="This Month"
-            expenseTitle="Last Month"
+            firstTitle="This Month"
+            secondTitle="This Month"
+            thirdTitle="Last Month"
           />
         </div>
       ) : (

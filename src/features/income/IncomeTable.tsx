@@ -22,12 +22,11 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/store/AuthStore";
 
 const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
-  const { currentWallet } = useAuthStore();
+  const { currentWallet, setCurrentWallet } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const [loading, setLoading] = useState(false);
 
   // Items per page: 5 for desktop, 4 for mobile
   const itemsPerPage = isMobile ? 4 : 5;
@@ -70,26 +69,64 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
   }, [data, currentPage, itemsPerPage]);
 
   const handleDelete = async (item: TransactionWithCategory) => {
-    toast.promise(
-      async () => {
-        const walletUpdate = {
-          current_balance: currentWallet?.current_balance - item.amount,
-          total_income: currentWallet?.total_income - item.amount,
-        };
-        const result = await supabase
-          .from("wallets")
-          .update(walletUpdate)
-          .eq("id", currentWallet?.id)
-          .select()
-          .single();
-        console.log(result);
-        await supabase.from("transactions").delete().eq("id", item.id);
+    // Dummy promise to simulate async operation
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // console.log(item);
+
+    if (!currentWallet?.id) {
+      toast.error("No wallet selected");
+      return;
+    }
+
+    const res = await supabase
+      .from("transactions")
+      .delete()
+      .eq("id", item.id)
+      .select()
+      .single();
+
+    if (res.error) {
+      console.log(res.error);
+      throw new Error(res.error.message);
+    }
+
+    if (res?.data) {
+      const walletUpdate = {
+        current_balance: currentWallet?.current_balance - item.amount,
+        total_income: currentWallet?.total_income - item.amount,
+      };
+
+      const { data: result, error } = await supabase
+        .from("wallets")
+        .update(walletUpdate)
+        .eq("id", currentWallet?.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+      if (result) {
+        setCurrentWallet({ ...currentWallet, ...walletUpdate });
+        toast.success("Transaction deleted successfully.");
         queryClient.invalidateQueries({
-          queryKey: ["incomeTransactions", "recentTransactions", "wallets"],
+          queryKey: ["recentTransactions"],
         });
-      },
-      { loading: "Deleting...", success: "Deleted", error: "Couldn't delete!" },
-    );
+        queryClient.invalidateQueries({
+          queryKey: ["wallets"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["incomeTransactions"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["incomeExpenseData"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["spendingByCategory"],
+        });
+      }
+    }
   };
 
   if (isPending) {
@@ -242,8 +279,7 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                       title="Are you sure?"
                       description="This action cannot be undone. This will permanently delete this entry from the databse."
                       action={() => handleDelete(item)}
-                      // loading={loading}
-                    ></ConfirmationDialog>
+                    />
                   </div>
                 </TableCell>
               </TableRow>

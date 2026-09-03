@@ -65,7 +65,7 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Savings"
-            value={`${savingsPercentage.toFixed(2)}%`}
+            value={`${Number.isNaN(savingsPercentage) ? "In debt!" : `${savingsPercentage.toFixed(2)}%`}`}
             icon={Vault}
             delay={0.8}
             bgColor="bg-blue-400/80"

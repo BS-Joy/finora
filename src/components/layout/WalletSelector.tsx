@@ -13,7 +13,7 @@ import { useAuthStore } from "@/store/AuthStore";
 import Spinner from "../Spinner";
 
 const WalletSelector = ({ customClass }: { customClass?: string }) => {
-  const { userProfile, setCurrentWallet } = useAuthStore();
+  const { currentWallet, setCurrentWallet } = useAuthStore();
 
   const { data, error, isPending } = useQuery({
     queryKey: ["wallets"],
@@ -43,8 +43,6 @@ const WalletSelector = ({ customClass }: { customClass?: string }) => {
       </p>
     );
   }
-
-  const currentWallet = userProfile?.current_wallet;
 
   return (
     <DropdownMenu>

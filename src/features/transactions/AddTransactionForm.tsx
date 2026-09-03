@@ -114,7 +114,9 @@ const AddTransactionForm = ({
         const { error: deleteError } = await supabase
           .from("transactions")
           .delete()
-          .eq("id", res?.data?.id);
+          .eq("id", res?.data?.id)
+          .select()
+          .single();
 
         if (deleteError) {
           toast.error(
@@ -138,6 +140,12 @@ const AddTransactionForm = ({
       });
       queryClient.invalidateQueries({
         queryKey: ["incomeTransactions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["incomeExpenseData"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["spendingByCategory"],
       });
       closeDialog();
     }

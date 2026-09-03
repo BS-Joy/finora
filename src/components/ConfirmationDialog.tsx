@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2, Trash2Icon } from "lucide-react";
 import Spinner from "./Spinner";
+import { useState } from "react";
 
 interface ConfirmationDialogProps {
   title: string;
@@ -19,7 +20,6 @@ interface ConfirmationDialogProps {
   cancelText?: string;
   confirmText?: string;
   action?: () => void;
-  loading?: boolean;
 }
 
 const ConfirmationDialog = ({
@@ -28,10 +28,26 @@ const ConfirmationDialog = ({
   cancelText = "Cancel",
   confirmText = "Delete",
   action,
-  loading = false,
 }: ConfirmationDialogProps) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!action) return;
+
+    setLoading(true);
+    try {
+      await action();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error in action:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger className="h-8 w-8 flex justify-center items-center rounded-md cursor-pointer text-muted-foreground hover:text-destructive hover:bg-destructive/10">
         <Trash2 className="h-4 w-4" />
       </AlertDialogTrigger>
@@ -45,8 +61,8 @@ const ConfirmationDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={action} variant="destructive">
-            {loading ? <Spinner size="sm" /> : confirmText}
+          <AlertDialogAction onClick={handleClick} variant="destructive">
+            {loading ? <Spinner /> : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

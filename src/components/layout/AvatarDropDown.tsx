@@ -15,8 +15,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { redirect } from "react-router";
 
 export function AvatarDropDown() {
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log(error);
+      toast.error("Failed to sign out.");
+    }
+    toast.success("Signed out successfully.");
+    redirect("/login");
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,7 +55,7 @@ export function AvatarDropDown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut}>
           <LogOutIcon />
           Sign Out
         </DropdownMenuItem>

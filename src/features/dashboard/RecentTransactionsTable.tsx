@@ -61,6 +61,7 @@ const RecentTransactionsTable = ({
         {data?.length > 0 ? (
           data?.map((t) => (
             <RecentTransactionsCard
+              key={t.id}
               transaction={t}
               currencySymbol={currencySymbol}
             />

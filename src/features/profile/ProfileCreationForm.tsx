@@ -44,21 +44,10 @@ const ProfileCreationForm = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const submitForm: SubmitHandler<ProfileInputs> = async (data) => {
+    console.log(data);
     setLoading(true);
-    // 1. Create profile
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .insert({
-        currency: data.currency,
-        user_id: user?.id,
-      })
-      .select()
-      .single();
-    if (profileError) {
-      console.error(profileError);
-      return;
-    }
-    // 2. Create wallet
+
+    // 1. Create wallet first
     const { data: wallet, error: walletError } = await supabase
       .from("wallets")
       .insert({
@@ -68,20 +57,50 @@ const ProfileCreationForm = ({
         icon: data.icon,
         current_balance: 0,
         total_income: 0,
-        total_expenses: 0,
+        total_expense: 0,
       })
       .select()
       .single();
+
     if (walletError) {
       console.error(walletError);
+      setLoading(false);
       return;
     }
 
-    if (profile && wallet) {
-      setShowDialog(false);
-      console.log(profile, wallet);
+    // 2. Create profile and set current wallet
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .insert({
+        currency: data.currency,
+        user_id: user?.id,
+        current_wallet_id: wallet.id,
+      })
+      .select()
+      .single();
+
+    if (profileError) {
+      console.error(profileError);
       setLoading(false);
+
+      // Roll back wallet if profile creation fails
+      const { error: deleteWalletError } = await supabase
+        .from("wallets")
+        .delete()
+        .eq("id", wallet.id);
+
+      if (deleteWalletError) {
+        console.error("Failed to rollback wallet:", deleteWalletError);
+      }
+
+      return;
     }
+
+    // 3. Everything succeeded
+    console.log(profile, wallet);
+
+    setLoading(false);
+    setShowDialog(false);
   };
   return (
     <div>
@@ -194,7 +213,9 @@ const ProfileCreationForm = ({
 
             {/* submit button */}
             <Field>
-              <Button type="submit">{loading ? <Spinner /> : "Done"}</Button>
+              <Button type="submit">
+                {loading ? <Spinner darkBg /> : "Done"}
+              </Button>
             </Field>
           </FieldGroup>
         </FieldSet>

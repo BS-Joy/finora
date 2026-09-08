@@ -1,11 +1,10 @@
-import type { TransactionType } from "@/types";
+import type { TransactionWithCategory } from "@/types";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { Field, FieldGroup, FieldSet } from "@/components/ui/field";
 import FormField from "@/components/FormField";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/AuthStore";
 import { currencies } from "@/utils";
-import TransactionCategorySelector from "./TransactionCategorySelector";
 import { ArrowDown } from "lucide-react";
 import { useTransactionStore } from "@/store/TransactionStore";
 import { Button } from "@/components/ui/button";
@@ -17,9 +16,10 @@ import Spinner from "@/components/Spinner";
 import { toast } from "sonner";
 import NewCategoryDialog from "../category/NewCategoryDialog";
 import { useQueryClient } from "@tanstack/react-query";
+import TransactionCategorySelector from "../transactions/TransactionCategorySelector";
 
-interface AddTransactionFormPropsTypes {
-  transactionType: TransactionType;
+interface EditIncomeFormPropsTypes {
+  transaction: TransactionWithCategory;
   closeDialog: () => void;
 }
 
@@ -30,10 +30,10 @@ interface FormInputTypes {
   note?: string;
 }
 
-const AddTransactionForm = ({
-  transactionType,
+const EditIncomeForm = ({
+  transaction,
   closeDialog,
-}: AddTransactionFormPropsTypes) => {
+}: EditIncomeFormPropsTypes) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showNewCategoryDialog, setShowNewCategoryDialog] =
     useState<boolean>(false);
@@ -42,7 +42,7 @@ const AddTransactionForm = ({
   const { categories } = useTransactionStore();
   const queryClient = useQueryClient();
 
-  // console.log(currentWallet?.current_balance);
+  //   console.log(transaction);
 
   const {
     register,
@@ -51,10 +51,10 @@ const AddTransactionForm = ({
     formState: { errors },
   } = useForm<FormInputTypes>({
     defaultValues: {
-      title: "",
-      amount: "",
-      category_id: categories.filter((cat) => cat.type === transactionType)[0]
-        .id,
+      title: transaction.title,
+      amount: transaction.amount,
+      category_id: transaction.category_id,
+      note: transaction.note || "",
     },
   });
 
@@ -68,20 +68,25 @@ const AddTransactionForm = ({
     const formData = {
       ...data,
       amount: Number(data.amount),
-      type: transactionType,
+      type: "income",
       user_id: user?.id,
       wallet_id: userProfile?.current_wallet_id,
     };
 
+    // console.log(formData);
+
+    // setLoading(false);
+
     const res = await supabase
       .from("transactions")
-      .insert(formData)
+      .update(formData)
+      .eq("id", transaction.id)
       .select("*")
       .single();
 
     if (res.error) {
       setLoading(false);
-      toast.error("Something went wrong during insert transaction!");
+      toast.error("Something went wrong during update!");
       console.log(res.error);
       return;
     }
@@ -91,46 +96,52 @@ const AddTransactionForm = ({
         toast.error("No wallet selected");
         return;
       }
-      const walletUpdate =
-        transactionType === "income"
-          ? {
-              current_balance: currentWallet.current_balance + formData.amount,
-              total_income: currentWallet.total_income + formData.amount,
-            }
-          : {
-              current_balance: currentWallet.current_balance - formData.amount,
-              total_expense: currentWallet.total_expense + formData.amount,
-            };
 
-      const result = await supabase
-        .from("wallets")
-        .update(walletUpdate)
-        .eq("id", currentWallet?.id)
-        .select()
-        .single();
+      let newWallet: { current_balance: number; total_income: number } = {
+        current_balance: 0,
+        total_income: 0,
+      };
 
-      if (result.error) {
-        setLoading(false);
-        const { error: deleteError } = await supabase
-          .from("transactions")
-          .delete()
-          .eq("id", res?.data?.id)
+      if (transaction.amount !== formData.amount) {
+        newWallet = {
+          current_balance:
+            currentWallet.current_balance -
+            transaction.amount +
+            formData.amount,
+          total_income:
+            currentWallet.total_income - transaction.amount + formData.amount,
+        };
+
+        const result = await supabase
+          .from("wallets")
+          .update(newWallet)
+          .eq("id", currentWallet?.id)
           .select()
           .single();
 
-        if (deleteError) {
-          toast.error(
-            "Failed to update wallet balance and rollback transaction!",
-          );
-          console.log(result.error, deleteError);
-        } else {
-          toast.error("Failed to update wallet balance!");
-          console.log(result.error);
+        if (result.error) {
+          setLoading(false);
+          const { error: deleteError } = await supabase
+            .from("transactions")
+            .delete()
+            .eq("id", res?.data?.id)
+            .select()
+            .single();
+
+          if (deleteError) {
+            toast.error(
+              "Failed to update wallet balance and rollback transaction!",
+            );
+            console.log(result.error, deleteError);
+          } else {
+            toast.error("Failed to update wallet balance!");
+            console.log(result.error);
+          }
+          return;
         }
-        return;
+        setCurrentWallet({ ...currentWallet, ...newWallet });
       }
 
-      setCurrentWallet({ ...currentWallet, ...walletUpdate });
       toast.success("Transaction added successfully.");
       queryClient.invalidateQueries({
         queryKey: ["recentTransactions"],
@@ -212,20 +223,18 @@ const AddTransactionForm = ({
                           <TransactionCategorySelector
                             value={field.value}
                             onChange={field.onChange}
-                            transactionType={transactionType}
+                            transactionType="income"
                             // showDialog={showNewCategoryDialog}
                             setShowDialog={setShowNewCategoryDialog}
                           />
-                          {categories.filter(
-                            (cat) => cat.type === transactionType,
-                          ).length > 4 && (
+                          {categories.filter((cat) => cat.type === "income")
+                            .length > 4 && (
                             <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-background to-transparent pointer-events-none" />
                           )}
                           {/* Bottom fade hint — signals more content below */}
                         </div>
-                        {categories.filter(
-                          (cat) => cat.type === transactionType,
-                        ).length > 4 && (
+                        {categories.filter((cat) => cat.type === "income")
+                          .length > 4 && (
                           <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
                             <span className="animate-bounce">
                               <ArrowDown size={12} />
@@ -267,7 +276,7 @@ const AddTransactionForm = ({
                   <Spinner darkBg /> Saving
                 </>
               ) : (
-                "Save"
+                "Update"
               )}
             </Button>
           </Field>
@@ -281,4 +290,4 @@ const AddTransactionForm = ({
   );
 };
 
-export default AddTransactionForm;
+export default EditIncomeForm;

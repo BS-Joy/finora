@@ -13,13 +13,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/AuthStore";
+import IncomeEditDialog from "./IncomeEditDialog";
 
 const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
   const { currentWallet, setCurrentWallet } = useAuthStore();
@@ -69,10 +70,6 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
   }, [data, currentPage, itemsPerPage]);
 
   const handleDelete = async (item: TransactionWithCategory) => {
-    // Dummy promise to simulate async operation
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    // console.log(item);
-
     if (!currentWallet?.id) {
       toast.error("No wallet selected");
       return;
@@ -265,16 +262,10 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                 {/* transaction actions */}
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    {/* edit transaction */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    {/* edit income */}
+                    <IncomeEditDialog transaction={item} />
 
-                    {/* delete transaction */}
+                    {/* delete income */}
                     <ConfirmationDialog
                       title="Are you sure?"
                       description="This action cannot be undone. This will permanently delete this entry from the databse."

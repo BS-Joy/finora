@@ -1,5 +1,3 @@
-import { Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,27 +5,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+// import { useState } from "react";
 import type { TransactionWithCategory } from "@/types";
 import EditIncomeForm from "./EditIncomeForm";
 
 const IncomeEditDialog = ({
   transaction,
+  showDialog = false,
+  setShowDialog,
+  children,
 }: {
   transaction: TransactionWithCategory;
+  showDialog: boolean;
+  setShowDialog: (open: boolean) => void;
+  children?: React.ReactNode;
 }) => {
-  const [showDialog, setShowDialog] = useState<boolean>(false);
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
-        >
-          <Pencil className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent
         className="flex max-h-[80vh] flex-col gap-0 p-6 py-0 overflow-hidden sm:max-w-md"
         overlayBG="bg-primary/20"
@@ -44,9 +39,12 @@ const IncomeEditDialog = ({
 
         {/* edit transaction form */}
         <EditIncomeForm
-          key={transaction.id}
+          key={transaction?.id}
           transaction={transaction}
-          closeDialog={() => setShowDialog(false)}
+          closeDialog={() => {
+            console.log("Closing edit dialog");
+            setShowDialog(false);
+          }}
         />
       </DialogContent>
     </Dialog>

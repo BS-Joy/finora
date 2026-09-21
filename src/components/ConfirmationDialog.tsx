@@ -7,19 +7,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
   AlertDialogMedia,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import Spinner from "./Spinner";
 import { useState } from "react";
 
 interface ConfirmationDialogProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   cancelText?: string;
   confirmText?: string;
   action?: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  children?: React.ReactNode;
 }
 
 const ConfirmationDialog = ({
@@ -28,9 +30,11 @@ const ConfirmationDialog = ({
   cancelText = "Cancel",
   confirmText = "Delete",
   action,
+  open = false,
+  setOpen,
 }: ConfirmationDialogProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  // const [open, setOpen] = useState<boolean>(false);
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -48,9 +52,13 @@ const ConfirmationDialog = ({
   };
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger className="h-8 w-8 flex justify-center items-center rounded-md cursor-pointer text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-        <Trash2 className="h-4 w-4" />
-      </AlertDialogTrigger>
+      {/* {children ? (
+        children
+      ) : (
+        <AlertDialogTrigger className="h-8 w-8 flex justify-center items-center rounded-md cursor-pointer text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+          <Trash2 className="h-4 w-4" />
+        </AlertDialogTrigger>
+      )} */}
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">

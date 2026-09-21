@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
@@ -21,6 +21,7 @@ import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/AuthStore";
 import IncomeEditDialog from "./IncomeEditDialog";
+import { Pencil } from "lucide-react";
 
 const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
   const { currentWallet, setCurrentWallet } = useAuthStore();
@@ -28,6 +29,13 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [itemtoEdit, setItemtoEdit] = useState<TransactionWithCategory | null>(
+    null,
+  );
+  const [itemToDelete, setItemToDelete] =
+    useState<TransactionWithCategory | null>(null);
 
   // Items per page: 5 for desktop, 4 for mobile
   const itemsPerPage = isMobile ? 4 : 5;
@@ -263,14 +271,30 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     {/* edit income */}
-                    <IncomeEditDialog transaction={item} />
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
+                      onClick={() => {
+                        setItemtoEdit(item);
+                        setOpenEditDialog(true);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
 
                     {/* delete income */}
-                    <ConfirmationDialog
-                      title="Are you sure?"
-                      description="This action cannot be undone. This will permanently delete this entry from the databse."
-                      action={() => handleDelete(item)}
-                    />
+                    <Button
+                      variant="ghost"
+                      className="h-8 w-8 flex justify-center items-center rounded-md cursor-pointer text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        setItemToDelete(item);
+                        setOpenDeleteDialog(true);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -322,6 +346,22 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
             </Button>
           </div>
         </div>
+      )}
+
+      {/* delete dialog */}
+      <ConfirmationDialog
+        title="Are you sure?"
+        description="This action cannot be undone. This will permanently delete this entry from the databse."
+        action={() => itemToDelete && handleDelete(itemToDelete)}
+        open={openDeleteDialog}
+        setOpen={setOpenDeleteDialog}
+      />
+      {itemtoEdit && (
+        <IncomeEditDialog
+          transaction={itemtoEdit}
+          showDialog={openEditDialog}
+          setShowDialog={setOpenEditDialog}
+        />
       )}
     </>
   );

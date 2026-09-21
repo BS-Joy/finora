@@ -42,8 +42,6 @@ const EditIncomeForm = ({
   const { categories } = useTransactionStore();
   const queryClient = useQueryClient();
 
-  //   console.log(transaction);
-
   const {
     register,
     handleSubmit,
@@ -72,10 +70,6 @@ const EditIncomeForm = ({
       user_id: user?.id,
       wallet_id: userProfile?.current_wallet_id,
     };
-
-    // console.log(formData);
-
-    // setLoading(false);
 
     const res = await supabase
       .from("transactions")

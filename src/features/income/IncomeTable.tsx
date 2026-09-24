@@ -22,11 +22,13 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/store/AuthStore";
 import IncomeEditDialog from "./IncomeEditDialog";
 import { Pencil } from "lucide-react";
+import useCurrencySymbol from "@/hooks/useCurrencySymbol";
 
-const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
+const IncomeTable = () => {
   const { currentWallet, setCurrentWallet } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const queryClient = useQueryClient();
+  const currencySymbol = useCurrencySymbol();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -156,11 +158,7 @@ const IncomeTable = ({ currencySymbol }: { currencySymbol: string }) => {
         {paginatedData.length > 0 ? (
           <>
             {paginatedData.map((t) => (
-              <IncomeCard
-                key={t.id}
-                transaction={t}
-                currencySymbol={currencySymbol}
-              />
+              <IncomeCard key={t.id} transaction={t} />
             ))}
             {showPagination && (
               <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t flex-wrap">

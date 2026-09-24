@@ -17,66 +17,108 @@ import {
 import { Plus, Search, CalendarDays, ListFilter } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const IncomeFilters = () => {
   const categories = ["Salary", "Freelance", "Business", "Investment", "Gift"];
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [showSearch, setShowSearch] = useState(false);
+  // const [showSearch, setShowSearch] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   if (isMobile) {
     return (
       <div className="space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <CalendarDays className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-44">
-              <DropdownMenuItem>All Time</DropdownMenuItem>
-              <DropdownMenuItem>This Month</DropdownMenuItem>
-              <DropdownMenuItem>Last Month</DropdownMenuItem>
-              <DropdownMenuItem>Custom</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <ListFilter className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-44">
-              <DropdownMenuItem>Sort: Latest</DropdownMenuItem>
-              <DropdownMenuItem>Sort: Oldest</DropdownMenuItem>
-              <DropdownMenuItem>Amount: High to Low</DropdownMenuItem>
-              <DropdownMenuItem>Amount: Low to High</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setShowSearch((prev) => !prev)}
+        <div className="flex items-center gap-2">
+          {/* Calendar + Filter */}
+          <motion.div
+            initial={false}
+            animate={{
+              width: isSearchFocused ? 0 : "auto",
+              opacity: isSearchFocused ? 0 : 1,
+            }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center gap-2 overflow-hidden shrink-0"
           >
-            <Search className="h-4 w-4" />
-          </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <CalendarDays className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
 
-          <Button className="bg-primary hover:bg-primary/90">
-            <Plus className="h-4 w-4" />
-          </Button>
+              <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuItem>All Time</DropdownMenuItem>
+                <DropdownMenuItem>This Month</DropdownMenuItem>
+                <DropdownMenuItem>Last Month</DropdownMenuItem>
+                <DropdownMenuItem>Custom</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <ListFilter className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuItem>Sort: Latest</DropdownMenuItem>
+                <DropdownMenuItem>Sort: Oldest</DropdownMenuItem>
+                <DropdownMenuItem>Amount: High to Low</DropdownMenuItem>
+                <DropdownMenuItem>Amount: Low to High</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </motion.div>
+
+          {/* Search */}
+          <motion.div
+            layout
+            transition={{
+              layout: {
+                duration: 0.3,
+                ease: "easeInOut",
+              },
+            }}
+            className={cn(
+              "relative min-w-0",
+              isSearchFocused ? "flex-1" : "flex-1",
+            )}
+          >
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
+            <Input
+              placeholder="Search income..."
+              className="pl-9 text-sm"
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+            />
+          </motion.div>
+
+          {/* Add button */}
+          <motion.div
+            initial={false}
+            animate={{
+              width: isSearchFocused ? 0 : "auto",
+              opacity: isSearchFocused ? 0 : 1,
+            }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden shrink-0"
+          >
+            <Button className="bg-primary hover:bg-primary/90">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </motion.div>
         </div>
 
-        {/* Horizontal scrollable category chips - Mobile */}
+        {/* Categories */}
         <div className="flex gap-2 overflow-x-auto pt-2 px-1 scrollbar-hide">
           <Button
             variant={
               selectedCategory === "All Categories" ? "default" : "outline"
             }
             size="sm"
-            className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+            className={cn("rounded-full whitespace-nowrap shrink-0", {
               "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
                 selectedCategory === "All Categories",
             })}
@@ -84,31 +126,22 @@ const IncomeFilters = () => {
           >
             All Categories
           </Button>
+
           {categories.map((cat) => (
             <Button
               key={cat}
               variant={selectedCategory === cat ? "default" : "outline"}
               size="sm"
-              className={cn(`rounded-full whitespace-nowrap shrink-0`, {
+              className={cn("rounded-full whitespace-nowrap shrink-0", {
                 "bg-primary text-accent hover:cursor-not-allowed dark:bg-accent dark:text-primary":
                   selectedCategory === cat,
               })}
-              onClick={() => {
-                console.log(cat);
-                setSelectedCategory(cat);
-              }}
+              onClick={() => setSelectedCategory(cat)}
             >
               {cat}
             </Button>
           ))}
         </div>
-
-        {showSearch && (
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search income..." className="pl-9" />
-          </div>
-        )}
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import type { TransactionWithCategory } from "@/types";
 import { formatDate } from "@/lib/utils";
-import { Pencil, Trash2, MessageSquareX } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -18,13 +18,15 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import useCurrencySymbol from "@/hooks/useCurrencySymbol";
+import TransactionCard from "../transactions/TransactionCard";
 
 interface IncomeCardProps {
   transaction: TransactionWithCategory;
-  currencySymbol: string;
 }
 
-const IncomeCard = ({ transaction, currencySymbol }: IncomeCardProps) => {
+const IncomeCard = ({ transaction }: IncomeCardProps) => {
+  const currencySymbol = useCurrencySymbol();
   const formattedAmount = `+ ${currencySymbol}${Number(
     transaction.amount,
   ).toLocaleString("en-US", {
@@ -39,6 +41,7 @@ const IncomeCard = ({ transaction, currencySymbol }: IncomeCardProps) => {
 
   const queryClient = useQueryClient();
 
+  // delete transaction
   const handleDelete = async (item: TransactionWithCategory) => {
     if (!currentWallet?.id) {
       toast.error("No wallet selected");
@@ -100,39 +103,7 @@ const IncomeCard = ({ transaction, currencySymbol }: IncomeCardProps) => {
     <>
       <Drawer open={openDrwaer} onOpenChange={setOpenDrawer}>
         <DrawerTrigger onClick={() => setOpenDrawer(true)} asChild>
-          <div className="bg-card border rounded-lg p-3 mb-4 last:mb-0">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span
-                  className="p-2 rounded flex items-center justify-center shrink"
-                  style={{ backgroundColor: transaction.category.color }}
-                >
-                  {transaction.category.icon}
-                </span>
-                <div className="flex flex-col justify-center">
-                  <h6 className="font-bold text-sm dark:text-cream">
-                    {transaction.title}
-                  </h6>
-
-                  <p className="text-[12px] text-muted-foreground font-jakarta font-medium">
-                    {transaction.note || <MessageSquareX size={10} />}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <div className="flex flex-col gap-1 items-end">
-                  <span className="font-bold text-green-500">
-                    + {currencySymbol}
-                    {transaction.amount}
-                  </span>
-                  <span className="text-[12px]">
-                    {formatDate(transaction?.created_at ?? "Date Unknown")}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TransactionCard transaction={transaction} />
         </DrawerTrigger>
 
         <DrawerContent className="z-101 rounded-t-[28px] border-t border-border bg-card px-4 pb-5 pt-3 shadow-none">

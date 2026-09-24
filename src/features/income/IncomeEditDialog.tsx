@@ -32,7 +32,7 @@ const IncomeEditDialog = ({
         // }}
       >
         <DialogHeader className="contents space-y-0 text-left border-b bg-red-500">
-          <DialogTitle className="px-6 pt-6 pb-4 text-xl font-semibold">
+          <DialogTitle className="pt-6 pb-4 text-xl font-semibold">
             Edit Income
           </DialogTitle>
         </DialogHeader>

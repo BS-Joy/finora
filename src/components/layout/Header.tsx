@@ -5,10 +5,13 @@ import Logo from "../Logo";
 import WalletSelector from "./WalletSelector";
 import NewTransactionDialog from "@/features/dashboard/NewTransactionDialog";
 import { AvatarDropDown } from "./AvatarDropDown";
+import { useLocation } from "react-router";
 
 const Header = () => {
   const { user } = useAuthStore();
   const today = format(new Date(), "d MMMM, yyyy");
+  const currentPage = useLocation().pathname;
+  const isHomePage = currentPage === "/";
 
   return (
     <header className="lg:ml-69 flex bg-card md:bg-transparent justify-between items-center py-7 pre-sm:px-6 px-3">
@@ -21,7 +24,7 @@ const Header = () => {
       <Logo textColor="primary" darkTextColor="cream" style="md:hidden" />
 
       <div className="flex items-center gap-4">
-        <NewTransactionDialog />
+        {isHomePage && <NewTransactionDialog />}
         <div className="hidden md:block lg:hidden">
           <WalletSelector />
         </div>

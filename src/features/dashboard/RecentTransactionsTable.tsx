@@ -12,8 +12,8 @@ import { supabase } from "@/lib/supabase";
 import { cn, formatDate } from "@/lib/utils";
 import Spinner from "@/components/Spinner";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import RecentTransactionsCard from "./RecentTransactionsCard";
 import type { TransactionWithCategory } from "@/types";
+import TransactionCard from "../transactions/TransactionCard";
 
 const RecentTransactionsTable = ({
   currencySymbol,
@@ -57,15 +57,9 @@ const RecentTransactionsTable = ({
 
   if (isMobile) {
     return (
-      <div className="mt-4">
+      <div className="mt-4 bg-card p-4 border rounded-lg">
         {data?.length > 0 ? (
-          data?.map((t) => (
-            <RecentTransactionsCard
-              key={t.id}
-              transaction={t}
-              currencySymbol={currencySymbol}
-            />
-          ))
+          data?.map((t) => <TransactionCard key={t.id} transaction={t} />)
         ) : (
           <p className="text-center text-muted-foreground">
             No recent transactions.
